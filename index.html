@@ -1,15 +1,17 @@
 <!DOCTYPE html>
+<!--
+	Demonstration of the TI SensorTag JavaScript library.
+-->
 <html>
 
 <head>
-
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, user-scalable=no,
 		shrink-to-fit=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
 	<meta http-equiv="pragma" content="no-cache" />
 	<meta http-equiv="expires" content="-1" />
-	
-	<title>Basic Template App</title>
+
+	<title>Gen 2 NERLD APP</title>
 
 	<style>
 		@import 'ui/css/evothings-app.css';
@@ -19,18 +21,20 @@
 	// Redirect console.log to Evothings Workbench.
 	if (window.hyper && window.hyper.log) { console.log = hyper.log }
 	</script>
-	
-	
+
 	<script src="cordova.js"></script>
+	<script src="libs/jquery/jquery.js"></script>
 	<script src="libs/evothings/evothings.js"></script>
 	<script src="libs/evothings/ui/ui.js"></script>
-	<script src="app.js"></script>
+	<script src="libs/evothings/easyble/easyble.js"></script>
 	<script src="https://www.google.com/jsapi"></script>
-	<!-- TODO: Add libraries that you need -->
+	<script src="libs/evothings/tisensortag/tisensortag.js"></script>
+	<script src="NERLDapp.js"></script>
 
 </head>
 
-<body ontouchstart=""><!-- ontouchstart="" enables low-delay CSS transitions. -->
+<body>
+
 	<header>
 		<button class="back" onclick="history.back()">
 			<img src="ui/images/arrow-left.svg" />
@@ -48,77 +52,81 @@
 		</menu>
 	</header>
 
-	
-	<h1>Fab Labs</h1>
-	<p>(Update with laboratory name)</p>
 
-	<h2>Testing Local File Download</h2>
+	<h1 id="labTitle">Fab Labs</h1>
+	<img src="TISensorTagCC2650.png"
+		style="float:right;width:120px;height:auto;"/>
 
-	<div id="demo2"><p>Document Loaded on Click from server</p></div>
-	<button type="button" onclick="app.loadExpConfig()" class="green" >Download Server ExpConfig File</button>
+	<h2>Connect to SensorTag</h2>
 
-	<div id="chart_div" style="width: 400px; height: 120px;"></div>
+	<!--p id="info">Not Connected</p-->
 
-	
+	<p id="upgradeNotice" class="hidden">
+		<span class="color_softred">Please upgrade the firmware of your SensorTag.</span>
+	</p>
+
+	<button onclick="connect()" class="green">	Connect	</button>
+
+	<button onclick="disconnect()" class="charcoal">	Disconnect</button>
+
+	<p>
+		<strong>Status:</strong> <span id="StatusData">Press Connect to find the nearest SensorTag</span>
+	</p>
+
+	<h2>Temperature:</h2>
+	<p>
+		<span id="TemperatureData">[Waiting for value]</span>
+	</p>
 
 	<script>
-	/* 
-	* Trying the charting widgets with google charts
-	*/
+	// Just used to comment out
+	/*
+	<h2>Keypress:</h2>
+	<p>
+		<span id="KeypressData">[Waiting for value]</span>
+	</p>
 
-	// Load Google visualization library
-	google.load("visualization", "1", {packages:["gauge"]})
-    google.setOnLoadCallback(drawChart)
-	
-	var temp = 5;
-	
-	function drawChart() 
-	{
-	//Initial value for the chart
-	var data = google.visualization.arrayToDataTable([
-	  ['Label', 'Value'],
-	  ['Temp', 20]
-	]);
-	
-	//config options for the chart
-	var options = {
-	  width: 400, height: 120,
-	  redFrom: 25, redTo: 30,
-	  yellowFrom:22, yellowTo: 25,
-	  minorTicks: 1, max: 30
-	};
-	
-	var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
-	
-	chart.draw(data, options);
-	
-	setInterval(function() {
-		//Random data
-		temp = ((Math.random() * 5) + 20).toFixed(2);
-		//Passing the temperature value to the chart and redrawing it
-		data.setValue(0, 1, temp)
-		chart.draw(data, options)
-		}, 2500);
-	}
-	
+
+	<h2>Accelerometer:</h2>
+	<p>
+		<span id="AccelerometerData">[Waiting for value]</span>
+	</p>
+
+	<h2>Humidity:</h2>
+	<p>
+		<span id="HumidityData">[Waiting for value]</span>
+	</p>
+
+	<h2>Magnetometer:</h2>
+	<p>
+		<span id="MagnetometerData">[Waiting for value]</span>
+	</p>
+
+	<h2>Barometer:</h2>
+	<p>
+		<span id="BarometerData">[Waiting for value]</span>
+	</p>
+
+	<h2>Gyroscope:</h2>
+	<p>
+		<span id="GyroscopeData">[Waiting for value]</span>
+	</p>
+
+	<div id="Luxometer">
+		<h2>Luxometer:</h2>
+		<p>
+			<span id="LuxometerData">[Waiting for value]</span>
+		</p>
+	</div>
+
+	*/
 	</script>
 	
-	
+	<h2>Device info:</h2>
+	<p>
+		SensorTag device model: <span id="DeviceModel">?</span><br />
+		Firmware version: <span id="FirmwareData">?</span>
+	</p>
 
-	<!-- <button onclick="app.onStartButton()" class="green">START</button> -->
-	<!-- <button onclick="app.onStopButton()" class="red">STOP</button>	-->
-
-	<section id='information'>
-
-		<h2>Info</h2>
-
-		<p>
-			App to test development of remote lab design for non expert developers
-		</p>
-
-	</section>
-	
 </body>
-
 </html>
-

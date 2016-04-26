@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, user-scalable=no,
+		shrink-to-fit=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+	<meta http-equiv="pragma" content="no-cache" />
+	<meta http-equiv="expires" content="-1" />
+	
+	<title>Gen 2 NERLD APP</title>
+
+	<style>
+		@import 'ui/css/evothings-app.css';
+	</style>
+
+	<script>
+	// Redirect console.log to Evothings Workbench.
+	if (window.hyper && window.hyper.log) { console.log = hyper.log }
+	</script>
+	
+	
+	<script src="cordova.js"></script>
+	<script src="libs/jquery/jquery.js"></script>
+	<script src="libs/evothings/evothings.js"></script>
+	<script src="libs/evothings/ui/ui.js"></script>
+	<script src="libs/evothings/easyble/easyble.js"></script>
+	<script src="app.js"></script>
+	<script src="https://www.google.com/jsapi"></script>
+	<!-- TODO: Add libraries that you need -->
+
+</head>
+
+<body ontouchstart=""><!-- ontouchstart="" enables low-delay CSS transitions. -->
+	<header>
+		<button class="back" onclick="history.back()">
+			<img src="ui/images/arrow-left.svg" />
+		</button>
+
+		<img class="logotype" src="ui/images/logo.svg" alt="Evothings" />
+
+		<button id="menu-button" tabindex="0" onclick="this.focus()">
+			<img src="ui/images/menu.svg" />
+		</button>		
+		<menu>
+			<menuitem>
+				<a href="#information">Info</a>
+			</menuitem>
+		</menu>
+	</header>
+
+	
+	<h1 id="labTitle">Fab Labs</h1>
+
+	<h2>Connect to SensorTag</h2>
+
+	<p id="info">Not Connected</p>
+
+	<button onclick="app.onStartButton()" class="green">START</button>
+	<button onclick="app.onStopButton()" class="red">STOP</button>
+
+
+	<!-- div id="demo2"><p>Document Loaded on Click from server</p></div -->
+	<!-- button type="button" onclick="app.loadExpConfig()" class="green" >Download Server ExpConfig File</button -->
+	<!-- div id="chart_div" style="width: 400px; height: 120px;"></div -->
+
+	<canvas id="canvas" width="300" height="150"></canvas>
+	
+	<section id='information'>
+
+		<h2>Info</h2>
+
+		<p>
+			App to test development of remote lab design for non expert developers
+		</p>
+
+	</section>
+	
+	
+</body>
+
+</html>
+
