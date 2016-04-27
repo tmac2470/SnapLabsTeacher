@@ -4,28 +4,55 @@
  */
 loadExpConfig = function() 
 {
-		var json;
 		cordovaHTTP.get(
-		"http://www.cs.usyd.edu.au/~tmac2470/FabLabs/test.txt",  
+		"http://www.cs.usyd.edu.au/~tmac2470/expConfig.json",  
 		function(response)  // on success
 		{
-			try 
-			{  // is the resource well-formed?
-				json = JSON.parse(client.responseText); 
+			try{  // is the resource well-formed?
+				var json = JSON.parse(response.data); 
 			}
-			catch (ex) 
-			{   
+			catch (ex){   
 				// Invalid JSON, notify of the failure...
-				alert('Could not parse json, aborting..');
+				alert('Could not parse json, aborting...');
+				console.log(response.data)
 			} 
-			if (json) 
-			{ 
-				// Ok, it seems to be valid JSON, proceed here with the code
+			if (json){ 
+				//Set html values based on Config file
+				if('experimentConfig' in json)
+					experimentConfiguration(json.experimentConfig);
+				else
+					alert('Malformed json...');
+	
+				//document.getElementById("demo2").innerHTML = json.experimentConfig.labTitle;
 			}
-			document.getElementById("demo2").innerHTML = response.data;
 		}, 
 		function(response)   // on error
 		{
 			console.log(JSON.stringify(response));
 		});
+}
+
+
+/*
+ * experimetConfiguration 
+ * Change app layout based on input from COnfig file
+ */
+experimentConfiguration = function(data) 
+{
+	//Set Tirle of experiment
+	if('labTitle' in data){
+		document.getElementById("labTitle").innerHTML = data.labTitle;
+	}else{
+		document.getElementById("labTitle").innerHTML = "Default Experiment Title";
+	}
+	
+	//Set labels for Temperature
+	for(sensor in data.sensorTags){
+		var sensorData = data.sensorTags[sensor];
+		for(label in sensorData.labels){
+			//console.log(label + " and " + sensorData.labels[label]);
+			document.getElementById(label).innerHTML = sensorData.labels[label];
+		}
+	}
+	
 }

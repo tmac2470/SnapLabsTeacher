@@ -6,9 +6,12 @@
 		// Create First SensorTag CC2650 instance.
 		sensortag1 = evothings.tisensortag.createInstance(
 			evothings.tisensortag.CC2650_BLUETOOTH_SMART)
+		sensortag1.idName = 1;
 
 		sensortag2 = evothings.tisensortag.createInstance(
 			evothings.tisensortag.CC2650_BLUETOOTH_SMART)
+		sensortag1.idName = 2;
+			
 
 			// Uncomment to use SensorTag CC2541.
 		//sensortag = evothings.tisensortag.createInstance(
@@ -25,10 +28,10 @@
 		// as the second parameter.
 		//
 		sensortag1
-			.statusCallback(statusHandler1)
-			.errorCallback(errorHandler1)
+			.statusCallback(statusHandler)
+			.errorCallback(errorHandler)
 			//.keypressCallback(keypressHandler)
-			.temperatureCallback(temperatureHandler1, 1000)
+			.temperatureCallback(this.temperatureHandler, 1000)
 			//.humidityCallback(humidityHandler, 1000)
 			//.barometerCallback(barometerHandler, 1000)
 			//.accelerometerCallback(accelerometerHandler, 1000)
@@ -81,9 +84,9 @@
 			//sensortag1.gyroscopeOff()
 			//sensortag1.luxometerOff()
 
-			/*sensortag2.keypressOff()
+			//sensortag2.keypressOff()
 			sensortag2.temperatureOff()
-			sensortag2.humidityOff()
+			/*sensortag2.humidityOff()
 			sensortag2.barometerOff()
 			sensortag2.accelerometerOff()
 			sensortag2.magnetometerOff()
@@ -102,9 +105,9 @@
 			//sensortag1.gyroscopeOn()
 			//sensortag1.luxometerOn()
 
-			/*sensortag2.keypressOn()
+			//sensortag2.keypressOn()
 			sensortag2.temperatureOn()
-			sensortag2.humidityOn()
+			/*sensortag2.humidityOn()
 			sensortag2.barometerOn()
 			sensortag2.accelerometerOn()
 			sensortag2.magnetometerOn()
@@ -114,13 +117,15 @@
 		}
 	}
 
-	function statusHandler1(status)
+	function statusHandler(status)
 	{
 		if ('DEVICE_INFO_AVAILABLE' == status)
 		{
+			console.log("Status Handler 1 This: " + this.getDeviceModel())
+
 			// Show device model and firmware version.
-			displayValue('DeviceModel1', sensortag1.getDeviceModel())
-			displayValue('FirmwareData1', sensortag1.getFirmwareString())
+			displayValue('DeviceModel1', this.getDeviceModel())
+			displayValue('FirmwareData1', this.getFirmwareString())
 
 			//displayValue('DeviceMode2', sensortag1.getDeviceModel())
 			//displayValue('FirmwareData2', sensortag1.getFirmwareString())
@@ -143,9 +148,10 @@
 	{
 		if ('DEVICE_INFO_AVAILABLE' == status)
 		{
+			console.log("Status Handler 2 This: " + this.getDeviceModel())
 			// Show device model and firmware version.
-			displayValue('DeviceModel2', sensortag1.getDeviceModel())
-			displayValue('FirmwareData2', sensortag1.getFirmwareString())
+			displayValue('DeviceModel2', sensortag2.getDeviceModel())
+			displayValue('FirmwareData2', sensortag2.getFirmwareString())
 
 			//displayValue('DeviceMode2', sensortag1.getDeviceModel())
 			//displayValue('FirmwareData2', sensortag1.getFirmwareString())
@@ -164,7 +170,7 @@
 		displayValue('StatusData2', status)
 	}
 	
-	function errorHandler1(error)
+	function errorHandler(error)
 	{
 		console.log('Error: ' + error)
 
@@ -196,11 +202,23 @@
 	{
 		// Clear current values.
 		var blank = '[Waiting for value]'
-		displayValue('StatusData', 'Press Connect to find a SensorTag')
-		displayValue('DeviceModel', '?')
-		displayValue('FirmwareData', '?')
+		displayValue('StatusData1', 'Press Connect to find a SensorTag')
+		displayValue('DeviceModel1', '?')
+		displayValue('FirmwareData1', '?')
 		//displayValue('KeypressData', blank)
-		displayValue('TemperatureData', blank)
+		displayValue('TemperatureData1', blank)
+		//displayValue('AccelerometerData', blank)
+		//displayValue('HumidityData', blank)
+		//displayValue('MagnetometerData', blank)
+		//displayValue('BarometerData', blank)
+		//displayValue('GyroscopeData', blank)
+		//displayValue('LuxometerData', blank)
+
+		displayValue('StatusData2', 'Press Connect to find a SensorTag')
+		displayValue('DeviceModel2', '?')
+		displayValue('FirmwareData2', '?')
+		//displayValue('KeypressData', blank)
+		displayValue('TemperatureData2', blank)
 		//displayValue('AccelerometerData', blank)
 		//displayValue('HumidityData', blank)
 		//displayValue('MagnetometerData', blank)
@@ -236,8 +254,10 @@
 		displayValue('KeypressData', string)
 	}
 
-	function temperatureHandler1(data)
+	function temperatureHandler(data)
 	{
+		//console.log("Temp Handler 1 This: " + this.getDeviceModel())
+
 		// Calculate temperature from raw sensor data.
 		var values = sensortag1.getTemperatureValues(data)
 		var ac = values.ambientTemperature
