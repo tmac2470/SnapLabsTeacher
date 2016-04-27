@@ -29,6 +29,7 @@
 	<script src="libs/evothings/easyble/easyble.js"></script>
 	<script src="https://www.google.com/jsapi"></script>
 	<script src="libs/evothings/tisensortag/tisensortag.js"></script>
+	<script src="NERLDSensorTagApp.js"></script>
 	<script src="NERLDapp.js"></script>
 
 </head>
@@ -57,25 +58,29 @@
 	<img src="TISensorTagCC2650.png"
 		style="float:right;width:120px;height:auto;"/>
 
-	<h2>Connect to SensorTag</h2>
+	<!--div id="demo2"><p>Load New Experiment File</p></div -->
+	<!--button type="button" onclick="loadExpConfig()" class="green" >Download Server ExpConfig File</button-->
 
-	<!--p id="info">Not Connected</p-->
+	<h2>Connect to Two SensorTags</h2>
 
-	<p id="upgradeNotice" class="hidden">
-		<span class="color_softred">Please upgrade the firmware of your SensorTag.</span>
-	</p>
-
-	<button onclick="connect()" class="green">	Connect	</button>
-
+	<button onclick="connect()" class="green">	Connect First SensorTag	</button>
+	<button onclick="connect2()" class="green">	Connect Next SensorTag	</button>
 	<button onclick="disconnect()" class="charcoal">	Disconnect</button>
 
 	<p>
-		<strong>Status:</strong> <span id="StatusData">Press Connect to find the nearest SensorTag</span>
+		<strong>Status 1:</strong> <span id="StatusData1">Press Connect to find the nearest SensorTag</span>
+		<br>
+		<strong>Status 2:</strong> <span id="StatusData2">Press Connect to find the nearest SensorTag</span>
 	</p>
 
-	<h2>Temperature:</h2>
+	<h2>Temperature 1:</h2>
 	<p>
-		<span id="TemperatureData">[Waiting for value]</span>
+		<span id="TemperatureData1">[Waiting for value]</span>
+	</p>
+
+	<h2>Temperature 2:</h2>
+	<p>
+		<span id="TemperatureData2">[Waiting for value]</span>
 	</p>
 
 	<script>
@@ -122,10 +127,16 @@
 	*/
 	</script>
 	
-	<h2>Device info:</h2>
+	<h2>Device 1 info:</h2>
 	<p>
-		SensorTag device model: <span id="DeviceModel">?</span><br />
-		Firmware version: <span id="FirmwareData">?</span>
+		SensorTag device model: <span id="DeviceModel1">?</span><br />
+		Firmware version: <span id="FirmwareData1">?</span>
+	</p>
+
+	<h2>Device 2 info:</h2>
+	<p>
+		SensorTag device model: <span id="DeviceModel2">?</span><br />
+		Firmware version: <span id="FirmwareData2">?</span>
 	</p>
 
 </body>
