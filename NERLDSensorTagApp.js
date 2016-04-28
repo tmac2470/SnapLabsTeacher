@@ -38,7 +38,7 @@
 			.luxometerCallback(luxometerHandler, 1000)
 
 		sensortag1
-			.statusCallback(statusHandler1)
+			.statusCallback(statusHandler)
 			.errorCallback(errorHandler1)
 			.keypressCallback(keypressHandler)
 			.temperatureCallback(temperatureHandler1, 1000)
@@ -94,23 +94,23 @@
 		}
 		else
 		{
-			//sensortag0.keypressOn()
+			sensortag0.keypressOn()
 			sensortag0.temperatureOn()
-			//sensortag0.humidityOn()
-			//sensortag0.barometerOn()
-			//sensortag0.accelerometerOn()
-			//sensortag0.magnetometerOn()
-			//sensortag0.gyroscopeOn()
-			//sensortag0.luxometerOn()
+			sensortag0.humidityOn()
+			sensortag0.barometerOn()
+			sensortag0.accelerometerOn()
+			sensortag0.magnetometerOn()
+			sensortag0.gyroscopeOn()
+			sensortag0.luxometerOn()
 
-			//sensortag1.keypressOn()
+			sensortag1.keypressOn()
 			sensortag1.temperatureOn()
-			/*sensortag1.humidityOn()
+			sensortag1.humidityOn()
 			sensortag1.barometerOn()
 			sensortag1.accelerometerOn()
 			sensortag1.magnetometerOn()
 			sensortag1.gyroscopeOn()
-			sensortag1.luxometerOn()*/
+			sensortag1.luxometerOn()
 			sensorsOn = true
 		}
 	}

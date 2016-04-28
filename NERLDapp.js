@@ -59,6 +59,22 @@ experimentConfiguration = function(data)
 		experiment.innerHTML += "<p><button onclick=\"connect"+id+"()\" class=\"green\"> Connect "+sensorTagData.title+"	</button></p>";
 		experiment.innerHTML += "<p><strong>Status "+id+":</strong> <span id=\"StatusData"+id+"\">Press to connect</span></p>";
 
+	   //Testing alternative config format
+		for(sensor in sensorTagData.sensors){
+			var sensorProps = sensorTagData.sensors[sensor]
+			
+			//Set up each div for the sensors
+			experiment.innerHTML += "<div id=\""+sensor+id+"\"><h2 id=\""+sensor+"Label"+id+"\">" + sensorProps.label +"</h2><p><span id=\""+sensor+"Data"+id+"\"> Waiting for value </span><p></div>";
+			
+			
+			// Use default label in case 
+			document.getElementById(sensor+"Label"+id).innerHTML = sensorProps.label=="" ? sensor+ " " +id : sensorProps.label;
+			
+			//Hide the div if required
+			document.getElementById(sensor+id).style.display = sensorProps.display==1 ? "block" : "none";
+		}
+	
+	/* Working with old config format
 		for(sensor in sensorTagData.sensors){
 			//Set up each div for the sensors
 			experiment.innerHTML += "<div id=\""+sensor+id+"\"><h2 id="+sensor+"Label"+id+"\">" + sensor + id +"</h2><p><span id=\""+sensor+"Data"+id+"\"> Waiting for value </span><p></div>";
@@ -66,7 +82,9 @@ experimentConfiguration = function(data)
 			//Hide the div if required
 			document.getElementById(sensor+id).style.display = sensorTagData.sensors[sensor]==1 ? "block" : "none";
 		}
+		*/
 	}
+	
 	
 	/*Set labels for Temperature
 	for(sensor in data.sensorTags){
