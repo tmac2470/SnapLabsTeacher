@@ -22,7 +22,6 @@ loadExpConfig = function()
 					experimentConfiguration(json.experimentConfig);
 				else
 					alert('Malformed json...');
-	
 				//document.getElementById("demo2").innerHTML = json.experimentConfig.labTitle;
 			}
 		}, 
@@ -39,20 +38,43 @@ loadExpConfig = function()
  */
 experimentConfiguration = function(data) 
 {
-	//Set Tirle of experiment
+	//var expFrame = document.getElementById('experiment').contentWindow.document;
+	//expFrame.open();
+	//document.getElementById('experiment').style.display = "block";
+	var experiment = document.getElementById('experiment')
+    
+	//Set Title of experiment
 	if('labTitle' in data){
 		document.getElementById("labTitle").innerHTML = data.labTitle;
 	}else{
 		document.getElementById("labTitle").innerHTML = "Default Experiment Title";
 	}
 	
-	//Set labels for Temperature
+	// Display the SensorTags according to the configfle
+	for(id in data.sensorTags){
+		var sensorTagData = data.sensorTags[id];
+		
+		// Add each SensorTag name and a connect button for each
+		experiment.innerHTML += "<h2 id=\"sensorTagLabel"+id+"\"> "+sensorTagData.title+" </h2>";
+		experiment.innerHTML += "<p><button onclick=\"connect"+id+"()\" class=\"green\"> Connect "+sensorTagData.title+"	</button></p>";
+		experiment.innerHTML += "<p><strong>Status "+id+":</strong> <span id=\"StatusData"+id+"\">Press to connect</span></p>";
+
+		for(sensor in sensorTagData.sensors){
+			//Set up each div for the sensors
+			experiment.innerHTML += "<div id=\""+sensor+id+"\"><h2 id="+sensor+"Label"+id+"\">" + sensor + id +"</h2><p><span id=\""+sensor+"Data"+id+"\"> Waiting for value </span><p></div>";
+
+			//Hide the div if required
+			document.getElementById(sensor+id).style.display = sensorTagData.sensors[sensor]==1 ? "block" : "none";
+		}
+	}
+	
+	/*Set labels for Temperature
 	for(sensor in data.sensorTags){
 		var sensorData = data.sensorTags[sensor];
 		for(label in sensorData.labels){
 			//console.log(label + " and " + sensorData.labels[label]);
 			document.getElementById(label).innerHTML = sensorData.labels[label];
 		}
-	}
+	}*/
 	
 }

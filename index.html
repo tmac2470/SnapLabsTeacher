@@ -8,6 +8,7 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, user-scalable=no,
 		shrink-to-fit=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+	<meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate"" />
 	<meta http-equiv="pragma" content="no-cache" />
 	<meta http-equiv="expires" content="-1" />
 
@@ -54,38 +55,46 @@
 	</header>
 
 
-	<h1 id="labTitle">Fab Labs </h1>
 	<img src="TISensorTagCC2650.png"
-		style="float:right;width:120px;height:auto;"/>
+		style="float:left;width:120px;height:auto;"/>
+	<h1 id="labTitle">Fab Labs </h1> 
 
-	<div id="demo2"><p>Load New Experiment File</p></div>
-	<button type="button" onclick="loadExpConfig()" class="green" >Download Server ExpConfig File</button>
+	<button type="button" onclick="loadExpConfig()" class="green" >Download Exp Config File</button>
 
-	<h2>Connect to Two SensorTags</h2>
-
-	<button onclick="connect()" class="green">	Connect First SensorTag	</button>
-	<button onclick="connect2()" class="green">	Connect Next SensorTag	</button>
-	<button onclick="disconnect()" class="charcoal">	Disconnect</button>
-
-	<p>
-		<strong>Status 1:</strong> <span id="StatusData1">Press Connect to find the nearest SensorTag</span>
-		<br>
-		<strong>Status 2:</strong> <span id="StatusData2">Press Connect to find the nearest SensorTag</span>
-	</p>
-
-	<h2 id="temperatureLabel1" >Temperature 1:</h2>
-	<p>
-		<span id="TemperatureData1">[Waiting for value]</span>
-	</p>
-
-	<h2 id="temperatureLabel2">Temperature 2:</h2>
-	<p>
-		<span id="TemperatureData2">[Waiting for value]</span>
-	</p>
-
+	<div id="experiment"> </div>
+	
 	<script>
+	
 	// Just used to comment out
 	/*
+	<iframe id="experiment" src="about:blank" style="display:none"  frameBorder="0"></iframe>
+
+	<h2 id="sensorTagLabel0" >SensorTag 1:</h2>
+	<button onclick="connect()" class="green">	Connect First SensorTag	</button>
+	<p><strong>Status 1:</strong> <span id="StatusData1">Press Connect to find the nearest SensorTag</span>	</p>
+
+	<h2 id="temperatureLabel0" >Temperature 1:</h2>
+	<p>	<span id="temperatureData1">[Waiting for value]</span></p>
+
+	<h2>Device 1 info:</h2>
+	<p>	SensorTag device model: <span id="DeviceModel1">?</span><br />
+		Firmware version: <span id="FirmwareData1">?</span></p>
+
+	
+	
+	<h2 id="sensorTagLabel2" >SensorTag 2:</h2>
+	<button onclick="connect2()" class="green">	Connect Next SensorTag	</button>
+	<p>	<strong>Status 2:</strong> <span id="StatusData2">Press Connect to find the nearest SensorTag</span> </p>
+	
+	<h2 id="temperatureLabel2">Temperature 2:</h2>
+	<p>	<span id="temperatureData2">[Waiting for value]</span></p>
+	
+	<h2>Device 2 info:</h2>
+	<p>	SensorTag device model: <span id="DeviceModel2">?</span><br />
+		Firmware version: <span id="FirmwareData2">?</span> </p>
+
+	<button onclick="disconnect()" class="charcoal">Disconnect SensorTags </button>
+
 	<h2>Keypress:</h2>
 	<p>
 		<span id="KeypressData">[Waiting for value]</span>
@@ -127,17 +136,7 @@
 	*/
 	</script>
 	
-	<h2>Device 1 info:</h2>
-	<p>
-		SensorTag device model: <span id="DeviceModel1">?</span><br />
-		Firmware version: <span id="FirmwareData1">?</span>
-	</p>
 
-	<h2>Device 2 info:</h2>
-	<p>
-		SensorTag device model: <span id="DeviceModel2">?</span><br />
-		Firmware version: <span id="FirmwareData2">?</span>
-	</p>
 
 </body>
 </html>

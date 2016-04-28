@@ -1,19 +1,17 @@
+	var sensortag0
 	var sensortag1
-	var sensortag2
 
 	function initialiseSensorTag()
 	{
 		// Create First SensorTag CC2650 instance.
+		sensortag0 = evothings.tisensortag.createInstance(
+			evothings.tisensortag.CC2650_BLUETOOTH_SMART)
+
 		sensortag1 = evothings.tisensortag.createInstance(
 			evothings.tisensortag.CC2650_BLUETOOTH_SMART)
-		sensortag1.idName = 1;
-
-		sensortag2 = evothings.tisensortag.createInstance(
-			evothings.tisensortag.CC2650_BLUETOOTH_SMART)
-		sensortag1.idName = 2;
 			
 
-			// Uncomment to use SensorTag CC2541.
+		// Uncomment to use SensorTag CC2541.
 		//sensortag = evothings.tisensortag.createInstance(
 		//	evothings.tisensortag.CC2541_BLUETOOTH_SMART)
 
@@ -27,45 +25,45 @@
 		// Several of the sensors take a millisecond update interval
 		// as the second parameter.
 		//
-		sensortag1
+		sensortag0
 			.statusCallback(statusHandler)
 			.errorCallback(errorHandler)
-			//.keypressCallback(keypressHandler)
+			.keypressCallback(keypressHandler)
 			.temperatureCallback(this.temperatureHandler, 1000)
-			//.humidityCallback(humidityHandler, 1000)
-			//.barometerCallback(barometerHandler, 1000)
-			//.accelerometerCallback(accelerometerHandler, 1000)
-			//.magnetometerCallback(magnetometerHandler, 1000)
-			//.gyroscopeCallback(gyroscopeHandler, 1000)
-			//.luxometerCallback(luxometerHandler, 1000)
+			.humidityCallback(humidityHandler, 1000)
+			.barometerCallback(barometerHandler, 1000)
+			.accelerometerCallback(accelerometerHandler, 1000)
+			.magnetometerCallback(magnetometerHandler, 1000)
+			.gyroscopeCallback(gyroscopeHandler, 1000)
+			.luxometerCallback(luxometerHandler, 1000)
 
-		sensortag2
-			.statusCallback(statusHandler2)
-			.errorCallback(errorHandler2)
-			//.keypressCallback(keypressHandler)
-			.temperatureCallback(temperatureHandler2, 1000)
-			//.humidityCallback(humidityHandler, 1000)
-			//.barometerCallback(barometerHandler, 1000)
-			//.accelerometerCallback(accelerometerHandler, 1000)
-			//.magnetometerCallback(magnetometerHandler, 1000)
-			//.gyroscopeCallback(gyroscopeHandler, 1000)
-			//.luxometerCallback(luxometerHandler, 1000)*/
+		sensortag1
+			.statusCallback(statusHandler1)
+			.errorCallback(errorHandler1)
+			.keypressCallback(keypressHandler)
+			.temperatureCallback(temperatureHandler1, 1000)
+			.humidityCallback(humidityHandler, 1000)
+			.barometerCallback(barometerHandler, 1000)
+			.accelerometerCallback(accelerometerHandler, 1000)
+			.magnetometerCallback(magnetometerHandler, 1000)
+			.gyroscopeCallback(gyroscopeHandler, 1000)
+			.luxometerCallback(luxometerHandler, 1000)
 	}
 
-	function connect()
+	function connect0()
+	{
+		sensortag0.connectToNearestDevice()
+	}
+
+	function connect1()
 	{
 		sensortag1.connectToNearestDevice()
-	}
-
-	function connect2()
-	{
-		sensortag2.connectToNearestDevice()
 	}
 	
 	function disconnect()
 	{
+		sensortag0.disconnectDevice()
 		sensortag1.disconnectDevice()
-		sensortag2.disconnectDevice()
 		resetSensorDisplayValues()
 	}
 
@@ -75,44 +73,44 @@
 	{
 		if(sensorsOn)
 		{
-			//sensortag1.keypressOff()
-			sensortag1.temperatureOff()
-			//sensortag1.humidityOff()
-			//sensortag1.barometerOff()
-			//sensortag1.accelerometerOff()
-			//sensortag1.magnetometerOff()
-			//sensortag1.gyroscopeOff()
-			//sensortag1.luxometerOff()
+			sensortag0.keypressOff()
+			sensortag0.temperatureOff()
+			sensortag0.humidityOff()
+			sensortag0.barometerOff()
+			sensortag0.accelerometerOff()
+			sensortag0.magnetometerOff()
+			sensortag0.gyroscopeOff()
+			sensortag0.luxometerOff()
 
-			//sensortag2.keypressOff()
-			sensortag2.temperatureOff()
-			/*sensortag2.humidityOff()
-			sensortag2.barometerOff()
-			sensortag2.accelerometerOff()
-			sensortag2.magnetometerOff()
-			sensortag2.gyroscopeOff()
-			sensortag2.luxometerOff()*/
+			sensortag1.keypressOff()
+			sensortag1.temperatureOff()
+			sensortag1.humidityOff()
+			sensortag1.barometerOff()
+			sensortag1.accelerometerOff()
+			sensortag1.magnetometerOff()
+			sensortag1.gyroscopeOff()
+			sensortag1.luxometerOff()
 			sensorsOn = false
 		}
 		else
 		{
+			//sensortag0.keypressOn()
+			sensortag0.temperatureOn()
+			//sensortag0.humidityOn()
+			//sensortag0.barometerOn()
+			//sensortag0.accelerometerOn()
+			//sensortag0.magnetometerOn()
+			//sensortag0.gyroscopeOn()
+			//sensortag0.luxometerOn()
+
 			//sensortag1.keypressOn()
 			sensortag1.temperatureOn()
-			//sensortag1.humidityOn()
-			//sensortag1.barometerOn()
-			//sensortag1.accelerometerOn()
-			//sensortag1.magnetometerOn()
-			//sensortag1.gyroscopeOn()
-			//sensortag1.luxometerOn()
-
-			//sensortag2.keypressOn()
-			sensortag2.temperatureOn()
-			/*sensortag2.humidityOn()
-			sensortag2.barometerOn()
-			sensortag2.accelerometerOn()
-			sensortag2.magnetometerOn()
-			sensortag2.gyroscopeOn()
-			sensortag2.luxometerOn()*/
+			/*sensortag1.humidityOn()
+			sensortag1.barometerOn()
+			sensortag1.accelerometerOn()
+			sensortag1.magnetometerOn()
+			sensortag1.gyroscopeOn()
+			sensortag1.luxometerOn()*/
 			sensorsOn = true
 		}
 	}
@@ -121,56 +119,44 @@
 	{
 		if ('DEVICE_INFO_AVAILABLE' == status)
 		{
-			console.log("Status Handler 1 This: " + this.getDeviceModel())
+			console.log("Status Handler 0 This: " + this.getDeviceModel())
 
 			// Show device model and firmware version.
-			displayValue('DeviceModel1', this.getDeviceModel())
-			displayValue('FirmwareData1', this.getFirmwareString())
+			displayValue('DeviceModel0', this.getDeviceModel())
+			displayValue('FirmwareData0', this.getFirmwareString())
 
-			//displayValue('DeviceMode2', sensortag1.getDeviceModel())
-			//displayValue('FirmwareData2', sensortag1.getFirmwareString())
+			//displayValue('DeviceMode1', sensortag0.getDeviceModel())
+			//displayValue('FirmwareData1', sensortag0.getFirmwareString())
 
 			// Show which sensors are not supported by the connected SensorTag.
-			/*if (!sensortag1.isLuxometerAvailable())
+			/*if (!sensortag0.isLuxometerAvailable())
 			{
 				document.getElementById('Luxometer').style.display = 'none'
 			}
-			if (!sensortag2.isLuxometerAvailable())
+			if (!sensortag1.isLuxometerAvailable())
 			{
 				document.getElementById('Luxometer').style.display = 'none'
 			}*/
 		}
 
-		displayValue('StatusData1', status)
+		displayValue('StatusData0', status)
 	}
 
-	function statusHandler2(status)
-	{
-		if ('DEVICE_INFO_AVAILABLE' == status)
-		{
-			console.log("Status Handler 2 This: " + this.getDeviceModel())
-			// Show device model and firmware version.
-			displayValue('DeviceModel2', sensortag2.getDeviceModel())
-			displayValue('FirmwareData2', sensortag2.getFirmwareString())
-
-			//displayValue('DeviceMode2', sensortag1.getDeviceModel())
-			//displayValue('FirmwareData2', sensortag1.getFirmwareString())
-
-			// Show which sensors are not supported by the connected SensorTag.
-			/*if (!sensortag1.isLuxometerAvailable())
-			{
-				document.getElementById('Luxometer').style.display = 'none'
-			}
-			if (!sensortag2.isLuxometerAvailable())
-			{
-				document.getElementById('Luxometer').style.display = 'none'
-			}*/
-		}
-
-		displayValue('StatusData2', status)
-	}
-	
 	function errorHandler(error)
+	{
+		console.log('Error: ' + error)
+
+		if (evothings.easyble.error.DISCONNECTED == error)
+		{
+			resetSensorDisplayValues()
+		}
+		else
+		{
+			displayValue('StatusData0', 'Error: ' + error)
+		}
+	}
+
+	function errorHandler1(error)
 	{
 		console.log('Error: ' + error)
 
@@ -184,47 +170,33 @@
 		}
 	}
 
-	function errorHandler2(error)
-	{
-		console.log('Error: ' + error)
-
-		if (evothings.easyble.error.DISCONNECTED == error)
-		{
-			resetSensorDisplayValues()
-		}
-		else
-		{
-			displayValue('StatusData2', 'Error: ' + error)
-		}
-	}
-
 	function resetSensorDisplayValues()
 	{
 		// Clear current values.
 		var blank = '[Waiting for value]'
+		displayValue('StatusData0', 'Press Connect to find a SensorTag')
+		displayValue('DeviceModel0', '?')
+		displayValue('FirmwareData0', '?')
+		displayValue('KeypressData', blank)
+		displayValue('TemperatureData0', blank)
+		displayValue('AccelerometerData', blank)
+		displayValue('HumidityData', blank)
+		displayValue('MagnetometerData', blank)
+		displayValue('BarometerData', blank)
+		displayValue('GyroscopeData', blank)
+		displayValue('LuxometerData', blank)
+
 		displayValue('StatusData1', 'Press Connect to find a SensorTag')
 		displayValue('DeviceModel1', '?')
 		displayValue('FirmwareData1', '?')
-		//displayValue('KeypressData', blank)
+		displayValue('KeypressData', blank)
 		displayValue('TemperatureData1', blank)
-		//displayValue('AccelerometerData', blank)
-		//displayValue('HumidityData', blank)
-		//displayValue('MagnetometerData', blank)
-		//displayValue('BarometerData', blank)
-		//displayValue('GyroscopeData', blank)
-		//displayValue('LuxometerData', blank)
-
-		displayValue('StatusData2', 'Press Connect to find a SensorTag')
-		displayValue('DeviceModel2', '?')
-		displayValue('FirmwareData2', '?')
-		//displayValue('KeypressData', blank)
-		displayValue('TemperatureData2', blank)
-		//displayValue('AccelerometerData', blank)
-		//displayValue('HumidityData', blank)
-		//displayValue('MagnetometerData', blank)
-		//displayValue('BarometerData', blank)
-		//displayValue('GyroscopeData', blank)
-		//displayValue('LuxometerData', blank)
+		displayValue('AccelerometerData', blank)
+		displayValue('HumidityData', blank)
+		displayValue('MagnetometerData', blank)
+		displayValue('BarometerData', blank)
+		displayValue('GyroscopeData', blank)
+		displayValue('LuxometerData', blank)
 
 		// Reset screen color.
 		setBackgroundColor('white')
@@ -259,6 +231,29 @@
 		//console.log("Temp Handler 1 This: " + this.getDeviceModel())
 
 		// Calculate temperature from raw sensor data.
+		var values = sensortag0.getTemperatureValues(data)
+		var ac = values.ambientTemperature
+		var af = sensortag0.celsiusToFahrenheit(ac)
+		var tc = values.targetTemperature
+		var tf = sensortag0.celsiusToFahrenheit(tc)
+
+		// Prepare the information to display.
+		var string =
+			//'raw: <span style="font-family: monospace;">0x' +
+			//	bufferToHexStr(data, 0, 4) + '</span><br/>' +
+			(tc >= 0 ? '+' : '') + tc.toFixed(2) + '&deg; C ' +
+			'(' + (tf >= 0 ? '+' : '') + tf.toFixed(2) + '&deg; F)' + '<br/>' +
+			(ac >= 0 ? '+' : '') + ac.toFixed(2) + '&deg; C ' +
+			'(' + (af >= 0 ? '+' : '') + af.toFixed(2) + '&deg; F) [amb]' +
+			'<br/>'
+
+		// Update the value displayed.
+		displayValue('TemperatureData0', string)
+	}
+
+	function temperatureHandler1(data)
+	{
+		// Calculate temperature from raw sensor data.
 		var values = sensortag1.getTemperatureValues(data)
 		var ac = values.ambientTemperature
 		var af = sensortag1.celsiusToFahrenheit(ac)
@@ -279,33 +274,10 @@
 		displayValue('TemperatureData1', string)
 	}
 
-	function temperatureHandler2(data)
-	{
-		// Calculate temperature from raw sensor data.
-		var values = sensortag2.getTemperatureValues(data)
-		var ac = values.ambientTemperature
-		var af = sensortag2.celsiusToFahrenheit(ac)
-		var tc = values.targetTemperature
-		var tf = sensortag2.celsiusToFahrenheit(tc)
-
-		// Prepare the information to display.
-		var string =
-			//'raw: <span style="font-family: monospace;">0x' +
-			//	bufferToHexStr(data, 0, 4) + '</span><br/>' +
-			(tc >= 0 ? '+' : '') + tc.toFixed(2) + '&deg; C ' +
-			'(' + (tf >= 0 ? '+' : '') + tf.toFixed(2) + '&deg; F)' + '<br/>' +
-			(ac >= 0 ? '+' : '') + ac.toFixed(2) + '&deg; C ' +
-			'(' + (af >= 0 ? '+' : '') + af.toFixed(2) + '&deg; F) [amb]' +
-			'<br/>'
-
-		// Update the value displayed.
-		displayValue('TemperatureData2', string)
-	}
-
 	function accelerometerHandler(data)
 	{
 		// Calculate the x,y,z accelerometer values from raw data.
-		var values = sensortag1.getAccelerometerValues(data)
+		var values = sensortag0.getAccelerometerValues(data)
 		var x = values.x
 		var y = values.y
 		var z = values.z
@@ -328,11 +300,11 @@
 	function humidityHandler(data)
 	{
 		// Calculate the humidity values from raw data.
-		var values = sensortag1.getHumidityValues(data)
+		var values = sensortag0.getHumidityValues(data)
 
 		// Calculate the humidity temperature (C and F).
 		var tc = values.humidityTemperature
-		var tf = sensortag1.celsiusToFahrenheit(tc)
+		var tf = sensortag0.celsiusToFahrenheit(tc)
 
 		// Calculate the relative humidity.
 		var h = values.relativeHumidity
@@ -352,12 +324,12 @@
 	function magnetometerHandler(data)
 	{
 		// Calculate the magnetometer values from raw sensor data.
-		var values = sensortag1.getMagnetometerValues(data)
+		var values = sensortag0.getMagnetometerValues(data)
 		var x = values.x
 		var y = values.y
 		var z = values.z
 
-		//var model = sensortag1.getDeviceModel()
+		//var model = sensortag0.getDeviceModel()
 		//var dataOffset = (model == 2 ? 12 : 0)
 
 		// Prepare the information to display.
@@ -375,7 +347,7 @@
 	function barometerHandler(data)
 	{
 		// Calculate pressure from raw sensor data.
-		var values = sensortag1.getBarometerValues(data)
+		var values = sensortag0.getBarometerValues(data)
 		var pressure = values.pressure
 
 		// Prepare the information to display.
@@ -391,7 +363,7 @@
 	function gyroscopeHandler(data)
 	{
 		// Calculate the gyroscope values from raw sensor data.
-		var values = sensortag1.getGyroscopeValues(data)
+		var values = sensortag0.getGyroscopeValues(data)
 		var x = values.x
 		var y = values.y
 		var z = values.z
@@ -410,7 +382,7 @@
 
 	function luxometerHandler(data)
 	{
-		var value = sensortag1.getLuxometerValue(data)
+		var value = sensortag0.getLuxometerValue(data)
 
 		// Prepare the information to display.
 		string =
