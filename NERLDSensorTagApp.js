@@ -29,7 +29,7 @@
 			.statusCallback(statusHandler)
 			.errorCallback(errorHandler)
 			.keypressCallback(keypressHandler)
-			.temperatureCallback(this.temperatureHandler, 1000)
+			.temperatureCallback(temperatureHandler, 1000)
 			.humidityCallback(humidityHandler, 1000)
 			.barometerCallback(barometerHandler, 1000)
 			.accelerometerCallback(accelerometerHandler, 1000)
@@ -38,16 +38,16 @@
 			.luxometerCallback(luxometerHandler, 1000)
 
 		sensortag1
-			.statusCallback(statusHandler)
+			.statusCallback(statusHandler1)
 			.errorCallback(errorHandler1)
-			.keypressCallback(keypressHandler)
+			.keypressCallback(keypressHandler1)
 			.temperatureCallback(temperatureHandler1, 1000)
-			.humidityCallback(humidityHandler, 1000)
-			.barometerCallback(barometerHandler, 1000)
-			.accelerometerCallback(accelerometerHandler, 1000)
-			.magnetometerCallback(magnetometerHandler, 1000)
-			.gyroscopeCallback(gyroscopeHandler, 1000)
-			.luxometerCallback(luxometerHandler, 1000)
+			.humidityCallback(humidityHandler1, 1000)
+			.barometerCallback(barometerHandler1, 1000)
+			.accelerometerCallback(accelerometerHandler1, 1000)
+			.magnetometerCallback(magnetometerHandler1, 1000)
+			.gyroscopeCallback(gyroscopeHandler1, 1000)
+			//.luxometerCallback(luxometerHandler, 1000)
 	}
 
 	function connect0()
@@ -122,8 +122,8 @@
 			console.log("Status Handler 0 This: " + this.getDeviceModel())
 
 			// Show device model and firmware version.
-			displayValue('DeviceModel0', this.getDeviceModel())
-			displayValue('FirmwareData0', this.getFirmwareString())
+			//displayValue('DeviceModel0', this.getDeviceModel())
+			//displayValue('FirmwareData0', this.getFirmwareString())
 
 			//displayValue('DeviceMode1', sensortag0.getDeviceModel())
 			//displayValue('FirmwareData1', sensortag0.getFirmwareString())
@@ -142,6 +142,11 @@
 		displayValue('StatusData0', status)
 	}
 
+	
+	function statusHandler1(status)
+	{
+		displayValue('StatusData1', status)
+	}
 	function errorHandler(error)
 	{
 		console.log('Error: ' + error)
@@ -152,7 +157,7 @@
 		}
 		else
 		{
-			displayValue('StatusData0', 'Error: ' + error)
+			displayValue('StatusData1', 'Error: ' + error)
 		}
 	}
 
@@ -177,26 +182,26 @@
 		displayValue('StatusData0', 'Press Connect to find a SensorTag')
 		displayValue('DeviceModel0', '?')
 		displayValue('FirmwareData0', '?')
-		displayValue('KeypressData', blank)
+		displayValue('KeypressData0', blank)
 		displayValue('TemperatureData0', blank)
-		displayValue('AccelerometerData', blank)
-		displayValue('HumidityData', blank)
-		displayValue('MagnetometerData', blank)
-		displayValue('BarometerData', blank)
-		displayValue('GyroscopeData', blank)
-		displayValue('LuxometerData', blank)
+		displayValue('AccelerometerData0', blank)
+		displayValue('HumidityData0', blank)
+		displayValue('MagnetometerData0', blank)
+		displayValue('BarometerData0', blank)
+		displayValue('GyroscopeData0', blank)
+		//displayValue('LuxometerData0', blank)
 
 		displayValue('StatusData1', 'Press Connect to find a SensorTag')
 		displayValue('DeviceModel1', '?')
 		displayValue('FirmwareData1', '?')
-		displayValue('KeypressData', blank)
+		displayValue('KeypressData1', blank)
 		displayValue('TemperatureData1', blank)
-		displayValue('AccelerometerData', blank)
-		displayValue('HumidityData', blank)
-		displayValue('MagnetometerData', blank)
-		displayValue('BarometerData', blank)
-		displayValue('GyroscopeData', blank)
-		displayValue('LuxometerData', blank)
+		displayValue('AccelerometerData1', blank)
+		displayValue('HumidityData1', blank)
+		displayValue('MagnetometerData1', blank)
+		displayValue('BarometerData1', blank)
+		displayValue('GyroscopeData1', blank)
+		//displayValue('LuxometerData1', blank)
 
 		// Reset screen color.
 		setBackgroundColor('white')
@@ -223,7 +228,31 @@
 
 		// Update the value displayed.
 		var string = 'raw: 0x' + bufferToHexStr(data, 0, 1)
-		displayValue('KeypressData', string)
+		displayValue('KeypressData0', string)
+	}
+	
+	function keypressHandler1(data)
+	{
+		// Update background color.
+		switch (data[0])
+		{
+			case 0:
+				setBackgroundColor('white')
+				break;
+			case 1:
+				setBackgroundColor('red')
+				break;
+			case 2:
+				setBackgroundColor('blue')
+				break;
+			case 3:
+				setBackgroundColor('magenta')
+				break;
+		}
+
+		// Update the value displayed.
+		var string = 'raw: 0x' + bufferToHexStr(data, 0, 1)
+		displayValue('KeypressData1', string)
 	}
 
 	function temperatureHandler(data)
@@ -294,7 +323,30 @@
 			'z: ' + (z >= 0 ? '+' : '') + z.toFixed(5) + 'G<br/>'
 
 		// Update the value displayed.
-		displayValue('AccelerometerData', string)
+		displayValue('AccelerometerData0', string)
+	}
+
+	function accelerometerHandler1(data)
+	{
+		// Calculate the x,y,z accelerometer values from raw data.
+		var values = sensortag1.getAccelerometerValues(data)
+		var x = values.x
+		var y = values.y
+		var z = values.z
+
+		//var model = sensortag.getDeviceModel()
+		//var dataOffset = (model == 2 ? 6 : 0)
+
+		// Prepare the information to display.
+		string =
+			//'raw: <span style="font-family: monospace;">0x' +
+			//	bufferToHexStr(data, dataOffset, 6) + '</span><br/>' +
+			'x: ' + (x >= 0 ? '+' : '') + x.toFixed(5) + 'G<br/>' +
+			'y: ' + (y >= 0 ? '+' : '') + y.toFixed(5) + 'G<br/>' +
+			'z: ' + (z >= 0 ? '+' : '') + z.toFixed(5) + 'G<br/>'
+
+		// Update the value displayed.
+		displayValue('AccelerometerData1', string)
 	}
 
 	function humidityHandler(data)
@@ -318,9 +370,33 @@
 			(h >= 0 ? '+' : '') + h.toFixed(2) + '% RH' + '<br/>'
 
 		// Update the value displayed.
-		displayValue('HumidityData', string)
+		displayValue('HumidityData0', string)
 	}
 
+	function humidityHandler1(data)
+	{
+		// Calculate the humidity values from raw data.
+		var values = sensortag1.getHumidityValues(data)
+
+		// Calculate the humidity temperature (C and F).
+		var tc = values.humidityTemperature
+		var tf = sensortag0.celsiusToFahrenheit(tc)
+
+		// Calculate the relative humidity.
+		var h = values.relativeHumidity
+
+		// Prepare the information to display.
+		string =
+			//'raw: <span style="font-family: monospace;">0x' +
+			//	bufferToHexStr(data, 0, 4) + '</span><br/>'
+			(tc >= 0 ? '+' : '') + tc.toFixed(2) + '&deg; C ' +
+			'(' + (tf >= 0 ? '+' : '') + tf.toFixed(2) + '&deg; F)' + '<br/>' +
+			(h >= 0 ? '+' : '') + h.toFixed(2) + '% RH' + '<br/>'
+
+		// Update the value displayed.
+		displayValue('HumidityData1', string)
+	}
+	
 	function magnetometerHandler(data)
 	{
 		// Calculate the magnetometer values from raw sensor data.
@@ -341,9 +417,32 @@
 			'z: ' + (z >= 0 ? '+' : '') + z.toFixed(5) + '&micro;T <br/>'
 
 		// Update the value displayed.
-		displayValue('MagnetometerData', string)
+		displayValue('MagnetometerData0', string)
 	}
 
+		function magnetometerHandler1(data)
+	{
+		// Calculate the magnetometer values from raw sensor data.
+		var values = sensortag1.getMagnetometerValues(data)
+		var x = values.x
+		var y = values.y
+		var z = values.z
+
+		//var model = sensortag0.getDeviceModel()
+		//var dataOffset = (model == 2 ? 12 : 0)
+
+		// Prepare the information to display.
+		string =
+			//'raw: <span style="font-family: monospace;">0x' +
+			//	bufferToHexStr(data, dataOffset, 6) + '</span><br/>' +
+			'x: ' + (x >= 0 ? '+' : '') + x.toFixed(5) + '&micro;T <br/>' +
+			'y: ' + (y >= 0 ? '+' : '') + y.toFixed(5) + '&micro;T <br/>' +
+			'z: ' + (z >= 0 ? '+' : '') + z.toFixed(5) + '&micro;T <br/>'
+
+		// Update the value displayed.
+		displayValue('MagnetometerData1', string)
+	}
+	
 	function barometerHandler(data)
 	{
 		// Calculate pressure from raw sensor data.
@@ -357,7 +456,23 @@
 			'Pressure: ' + pressure.toPrecision(5) + ' mbar<br/>'
 
 		// Update the value displayed.
-		displayValue('BarometerData', string)
+		displayValue('BarometerData0', string)
+	}
+
+	function barometerHandler1(data)
+	{
+		// Calculate pressure from raw sensor data.
+		var values = sensortag1.getBarometerValues(data)
+		var pressure = values.pressure
+
+		// Prepare the information to display.
+		string =
+			//'raw: <span style="font-family: monospace;">0x' +
+			//	bufferToHexStr(data, 0, 4) + '</span><br/>' +
+			'Pressure: ' + pressure.toPrecision(5) + ' mbar<br/>'
+
+		// Update the value displayed.
+		displayValue('BarometerData1', string)
 	}
 
 	function gyroscopeHandler(data)
@@ -377,7 +492,27 @@
 			'z: ' + (z >= 0 ? '+' : '') + z.toFixed(5) + '<br/>'
 
 		// Update the value displayed.
-		displayValue('GyroscopeData', string)
+		displayValue('GyroscopeData0', string)
+	}
+
+	function gyroscopeHandler1(data)
+	{
+		// Calculate the gyroscope values from raw sensor data.
+		var values = sensortag1.getGyroscopeValues(data)
+		var x = values.x
+		var y = values.y
+		var z = values.z
+
+		// Prepare the information to display.
+		string =
+			//'raw: <span style="font-family: monospace;">0x' +
+			//	bufferToHexStr(data, 0, 6) + '</span><br/>' +
+			'x: ' + (x >= 0 ? '+' : '') + x.toFixed(5) + '<br/>' +
+			'y: ' + (y >= 0 ? '+' : '') + y.toFixed(5) + '<br/>' +
+			'z: ' + (z >= 0 ? '+' : '') + z.toFixed(5) + '<br/>'
+
+		// Update the value displayed.
+		displayValue('GyroscopeData1', string)
 	}
 
 	function luxometerHandler(data)
@@ -391,7 +526,7 @@
 			'Light level: ' + value.toPrecision(5) + ' lux<br/>'
 
 		// Update the value displayed.
-		displayValue('LuxometerData', string)
+		displayValue('LuxometerData0', string)
 	}
 
 	function displayValue(elementId, value)

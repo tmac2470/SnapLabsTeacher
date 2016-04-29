@@ -50,6 +50,9 @@ experimentConfiguration = function(data)
 		document.getElementById("labTitle").innerHTML = "Default Experiment Title";
 	}
 	
+	// Clear experiment data
+	experiment.innerHTML = "";
+	
 	// Display the SensorTags according to the configfle
 	for(id in data.sensorTags){
 		var sensorTagData = data.sensorTags[id];
@@ -65,7 +68,6 @@ experimentConfiguration = function(data)
 			
 			//Set up each div for the sensors
 			experiment.innerHTML += "<div id=\""+sensor+id+"\"><h2 id=\""+sensor+"Label"+id+"\">" + sensorProps.label +"</h2><p><span id=\""+sensor+"Data"+id+"\"> Waiting for value </span><p></div>";
-			
 			
 			// Use default label in case 
 			document.getElementById(sensor+"Label"+id).innerHTML = sensorProps.label=="" ? sensor+ " " +id : sensorProps.label;
