@@ -47,7 +47,7 @@
 			.accelerometerCallback(accelerometerHandler1, 1000)
 			.magnetometerCallback(magnetometerHandler1, 1000)
 			.gyroscopeCallback(gyroscopeHandler1, 1000)
-			//.luxometerCallback(luxometerHandler, 1000)
+			.luxometerCallback(luxometerHandler, 1000)
 	}
 
 	function connect0()
@@ -119,7 +119,7 @@
 	{
 		if ('DEVICE_INFO_AVAILABLE' == status)
 		{
-			console.log("Status Handler 0 This: " + this.getDeviceModel())
+			//console.log("Status Handler 0 This: " + this.getDeviceModel())
 
 			// Show device model and firmware version.
 			//displayValue('DeviceModel0', this.getDeviceModel())
@@ -140,13 +140,16 @@
 		}
 
 		displayValue('StatusData0', status)
+		displayValue('SystemID0', sensortag0.getSystemIDToDisplay())
 	}
-
+ 
 	
 	function statusHandler1(status)
 	{
 		displayValue('StatusData1', status)
+		displayValue('SystemID1', sensortag1.getSystemToDisplay())
 	}
+	
 	function errorHandler(error)
 	{
 		console.log('Error: ' + error)

@@ -950,6 +950,8 @@
 	{
 		evothings.ble.connect(device.address, function(connectInfo)
 		{
+			//tcm looking for connection information
+			console.log("Device address is: " + device.address)
 			if (connectInfo.state == 2) // connected
 			{
 				device.deviceHandle = connectInfo.deviceHandle;

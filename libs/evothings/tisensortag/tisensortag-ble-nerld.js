@@ -579,13 +579,19 @@
 				// Set model number.
 				var sID = new Uint8Array(data)
 				
-			    var output = 'B0:B4:48:';
-				for (var i=0; i < 3; i++){
-					console.log('sid value: ' + sID[i])
-					output += (sID[i] + 0x100).toString(16).slice(1) + ":";
-					console.log('outputvalue: ' + output)
+				// Set Up System ID for the SensorTag - specific for NERLD implementation
+				var display = 'B0:B4:48';
+				//Read first 3 bytes backward and convert to Hex
+				for (var i=2; i>=0; i--){
+					display += ":" + (sID[i] + 0x100).toString(16).slice(1).toUpperCase();
 				}
-				
+				instance.systemIDDisplay = display;
+
+				var output = '';
+				//Read first 3 bytes backward and convert to Hex
+				for (var i=0; i<sID.length; i++){
+					output += sID[i].toString(16);
+				}
 				instance.systemIDString = output;
 				
 				// Next read firmware version.

@@ -57,34 +57,37 @@ experimentConfiguration = function(data)
 	for(id in data.sensorTags){
 		var sensorTagData = data.sensorTags[id];
 		
-		// Add each SensorTag name and a connect button for each
-		experiment.innerHTML += "<h2 id=\"sensorTagLabel"+id+"\"> "+sensorTagData.title+" </h2>";
-		experiment.innerHTML += "<p><button onclick=\"connect"+id+"()\" class=\"green\"> Connect "+sensorTagData.title+"	</button></p>";
-		experiment.innerHTML += "<p><strong>Status "+id+":</strong> <span id=\"StatusData"+id+"\">Press to connect</span></p>";
+		//Diplay SensorTag data if configured
+		if(sensorTagData.connect=="1"){
+			// Add each SensorTag name and a connect button for each
+			experiment.innerHTML += "<h2 id=\"sensorTagLabel"+id+"\"> "+sensorTagData.title+" </h2>";
+			experiment.innerHTML += "<p><button onclick=\"connect"+id+"()\" class=\"green\"> Connect "+sensorTagData.title+"	</button></p>";
+			experiment.innerHTML += "<p><strong>Status "+id+":</strong> <span id=\"StatusData"+id+"\">Press to connect</span></p>";
+			experiment.innerHTML += "<p><strong>System ID "+id+":</strong> <span id=\"SystemID"+id+"\">SensorTag ID</span></p>";
 
-	   //Testing alternative config format
-		for(sensor in sensorTagData.sensors){
-			var sensorProps = sensorTagData.sensors[sensor]
-			
-			//Set up each div for the sensors
-			experiment.innerHTML += "<div id=\""+sensor+id+"\"><h2 id=\""+sensor+"Label"+id+"\">" + sensorProps.label +"</h2><p><span id=\""+sensor+"Data"+id+"\"> Waiting for value </span><p></div>";
-			
-			// Use default label in case 
-			document.getElementById(sensor+"Label"+id).innerHTML = sensorProps.label=="" ? sensor+ " " +id : sensorProps.label;
-			
-			//Hide the div if required
-			document.getElementById(sensor+id).style.display = sensorProps.display==1 ? "block" : "none";
-		}
-	
-	/* Working with old config format
-		for(sensor in sensorTagData.sensors){
-			//Set up each div for the sensors
-			experiment.innerHTML += "<div id=\""+sensor+id+"\"><h2 id="+sensor+"Label"+id+"\">" + sensor + id +"</h2><p><span id=\""+sensor+"Data"+id+"\"> Waiting for value </span><p></div>";
+			for(sensor in sensorTagData.sensors){
+				var sensorProps = sensorTagData.sensors[sensor]
+				
+				//Set up each div for the sensors
+				experiment.innerHTML += "<div id=\""+sensor+id+"\"><h2 id=\""+sensor+"Label"+id+"\">" + sensorProps.label +"</h2><p><span id=\""+sensor+"Data"+id+"\"> Waiting for value </span><p></div>";
+				
+				// Use default label in case 
+				document.getElementById(sensor+"Label"+id).innerHTML = sensorProps.label=="" ? sensor+ " " +id : sensorProps.label;
+				
+				//Hide the div if required
+				document.getElementById(sensor+id).style.display = sensorProps.display==1 ? "block" : "none";
+			}
+		
+		/* Working with old config format
+			for(sensor in sensorTagData.sensors){
+				//Set up each div for the sensors
+				experiment.innerHTML += "<div id=\""+sensor+id+"\"><h2 id="+sensor+"Label"+id+"\">" + sensor + id +"</h2><p><span id=\""+sensor+"Data"+id+"\"> Waiting for value </span><p></div>";
 
-			//Hide the div if required
-			document.getElementById(sensor+id).style.display = sensorTagData.sensors[sensor]==1 ? "block" : "none";
+				//Hide the div if required
+				document.getElementById(sensor+id).style.display = sensorTagData.sensors[sensor]==1 ? "block" : "none";
+			}
+			*/
 		}
-		*/
 	}
 	
 	

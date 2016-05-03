@@ -263,6 +263,16 @@ evothings.tisensortag.createGenericInstance = function()
 	{
 		return instance.systemIDString
 	}
+
+	/**
+	 * Public. Get system ID to display. TCM
+	 * @instance
+	 * @public
+	 */
+	instance.getSystemIDToDisplay = function()
+	{
+		return instance.systemIDDisplay
+	}
 	/**
 	 * Public. Checks if the Temperature sensor is available.
 	 * @preturn true if available, false if not.
