@@ -1,3 +1,6 @@
+var sensortagMappingData
+
+
 /*
  * CordovaHTTP get test to load a local file
  * this file is local at this stage so no test for remote access
@@ -59,45 +62,60 @@ experimentConfiguration = function(data)
 		
 		//Diplay SensorTag data if configured
 		if(sensorTagData.connect=="1"){
-			// Add each SensorTag name and a connect button for each
-			experiment.innerHTML += "<h2 id=\"sensorTagLabel"+id+"\"> "+sensorTagData.title+" </h2>";
-			experiment.innerHTML += "<p><button onclick=\"connect"+id+"()\" class=\"green\"> Connect "+sensorTagData.title+"	</button></p>";
-			experiment.innerHTML += "<p><strong>Status "+id+":</strong> <span id=\"StatusData"+id+"\">Press to connect</span></p>";
-			experiment.innerHTML += "<p><strong>System ID "+id+":</strong> <span id=\"SystemID"+id+"\">SensorTag ID</span></p>";
+ 			// Add each SensorTag name and a connect button for each
+			experiment.innerHTML += "<p><button onclick=\"connection("+id+")\" class=\"green\" id=\"connectionButton"+id+"\"> Connect to "+sensorTagData.title+"	</button></p>";
+			experiment.innerHTML += "<h2 id=\"sensorTagLabel"+id+"\"> "+sensorTagData.title+": <span id=\"SystemID"+id+"\">SensorTag ID</span> </h2>";
+			experiment.innerHTML += "<p><strong>Status "+id+":</strong> <span id=\"StatusData"+id+"\">NOT CONNECTED</span></p>";
+			//experiment.innerHTML += "<p><strong>Identifier "+id+":</strong> <span id=\"SystemID"+id+"\">SensorTag ID</span></p>";
 
-			for(sensor in sensorTagData.sensors){
+			console.log("<p><button onclick=\"connection("+id+")\" class=\"green\" id=\"connectionButton"+id+"\"> Connect to "+sensorTagData.title+"	</button></p>")
+
+				for(sensor in sensorTagData.sensors){
 				var sensorProps = sensorTagData.sensors[sensor]
-				
-				//Set up each div for the sensors
-				experiment.innerHTML += "<div id=\""+sensor+id+"\"><h2 id=\""+sensor+"Label"+id+"\">" + sensorProps.label +"</h2><p><span id=\""+sensor+"Data"+id+"\"> Waiting for value </span><p></div>";
-				
+
 				// Use default label in case 
-				document.getElementById(sensor+"Label"+id).innerHTML = sensorProps.label=="" ? sensor+ " " +id : sensorProps.label;
+				var sensorLabel = sensorProps.label=="" ? sensor+ " " +id : sensorProps.label;
+
+				//Set up each div for the sensors
+				experiment.innerHTML += "<div id=\""+sensor+id+"\" class=\"sensorReadingEntry\"><p><span id=\""+sensor+"Label"+id+"\" class=\"sensorReadingLabel\"><strong>" + sensorLabel +": </strong></span><span id=\""+sensor+"Data"+id+"\" class=\"sensorReadingValue\"> Waiting for value </span></p></div><p>";
 				
 				//Hide the div if required
 				document.getElementById(sensor+id).style.display = sensorProps.display==1 ? "block" : "none";
 			}
-		
-		/* Working with old config format
-			for(sensor in sensorTagData.sensors){
-				//Set up each div for the sensors
-				experiment.innerHTML += "<div id=\""+sensor+id+"\"><h2 id="+sensor+"Label"+id+"\">" + sensor + id +"</h2><p><span id=\""+sensor+"Data"+id+"\"> Waiting for value </span><p></div>";
-
-				//Hide the div if required
-				document.getElementById(sensor+id).style.display = sensorTagData.sensors[sensor]==1 ? "block" : "none";
-			}
-			*/
-		}
+ 		}
 	}
-	
-	
-	/*Set labels for Temperature
-	for(sensor in data.sensorTags){
-		var sensorData = data.sensorTags[sensor];
-		for(label in sensorData.labels){
-			//console.log(label + " and " + sensorData.labels[label]);
-			document.getElementById(label).innerHTML = sensorData.labels[label];
-		}
-	}*/
-	
 }
+
+/*
+ * CordovaHTTP get test to load a local file
+ * Load the sensortag mapping data file
+ */
+loadSensortagConfig = function() 
+{
+		cordovaHTTP.get(
+		"http://www.cs.usyd.edu.au/~tmac2470/sensortagConfig.json",  
+		function(response)  // on success
+		{
+			try{  // is the resource well-formed?
+				var json = JSON.parse(response.data); 
+			}
+			catch (ex){   
+				// Invalid JSON, notify of the failure...
+				alert('Could not parse json, aborting...');
+				console.log(response.data)
+			} 
+			if (json){ 
+				//Set html values based on Config file
+				if('sensortagMapping' in json)
+					sensortagMappingData = json.sensortagMapping.sensortags;
+				else
+					alert('Malformed json...');
+				//document.getElementById("demo2").innerHTML = json.experimentConfig.labTitle;
+			}
+		}, 
+		function(response)   // on error
+		{
+			console.log(JSON.stringify(response));
+		});
+}
+

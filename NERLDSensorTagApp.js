@@ -6,11 +6,13 @@
 		// Create First SensorTag CC2650 instance.
 		sensortag0 = evothings.tisensortag.createInstance(
 			evothings.tisensortag.CC2650_BLUETOOTH_SMART)
+		sensortag0.LOOKINGFOR = "85a6bf0048b4b0";
+		sensortag0.connected = false;
 
 		sensortag1 = evothings.tisensortag.createInstance(
 			evothings.tisensortag.CC2650_BLUETOOTH_SMART)
-			
-
+		sensortag1.connected = false;
+		
 		// Uncomment to use SensorTag CC2541.
 		//sensortag = evothings.tisensortag.createInstance(
 		//	evothings.tisensortag.CC2541_BLUETOOTH_SMART)
@@ -50,6 +52,45 @@
 			.luxometerCallback(luxometerHandler, 1000)
 	}
 
+
+	function connection(id)
+	{
+		if(id==0){
+			if (!sensortag0.connected)
+			{
+				sensortag0.connectToNearestDevice();
+				sensortag0.connected = true;
+				displayValue("connectionButton0","Disconnect")
+				changeButtonColour("connectionButton0","red")
+			}
+			else
+			{
+				disconnect0();
+				sensortag0.connected = false;
+				displayValue("connectionButton0","Reconnect")
+				changeButtonColour("connectionButton0","green")
+			}
+		}
+		else if(id==1)
+		{
+			if (!sensortag1.connected)
+			{
+				sensortag1.connectToNearestDevice();
+				sensortag1.connected = true;
+				displayValue("connectionButton1","Disconnect")
+				changeButtonColour("connectionButton1","red")
+			}
+			else
+			{
+				disconnect1();
+				sensortag1.connected = false;
+				displayValue("connectionButton1","Reconnect")
+				changeButtonColour("connectionButton1","green")
+			}
+			
+		}
+	}
+
 	function connect0()
 	{
 		sensortag0.connectToNearestDevice()
@@ -64,9 +105,21 @@
 	{
 		sensortag0.disconnectDevice()
 		sensortag1.disconnectDevice()
-		resetSensorDisplayValues()
+		resetSensorDisplayValues0()
+		resetSensorDisplayValues1()
 	}
 
+	function disconnect0()
+	{
+		sensortag0.disconnectDevice()
+		resetSensorDisplayValues0()
+	}
+
+	function disconnect1()
+	{
+		sensortag1.disconnectDevice()
+		resetSensorDisplayValues1()
+	}
 	var sensorsOn = true
 
 	function toggleSensors()
@@ -119,28 +172,11 @@
 	{
 		if ('DEVICE_INFO_AVAILABLE' == status)
 		{
-			//console.log("Status Handler 0 This: " + this.getDeviceModel())
-
-			// Show device model and firmware version.
-			//displayValue('DeviceModel0', this.getDeviceModel())
-			//displayValue('FirmwareData0', this.getFirmwareString())
-
-			//displayValue('DeviceMode1', sensortag0.getDeviceModel())
-			//displayValue('FirmwareData1', sensortag0.getFirmwareString())
-
-			// Show which sensors are not supported by the connected SensorTag.
-			/*if (!sensortag0.isLuxometerAvailable())
-			{
-				document.getElementById('Luxometer').style.display = 'none'
-			}
-			if (!sensortag1.isLuxometerAvailable())
-			{
-				document.getElementById('Luxometer').style.display = 'none'
-			}*/
+			var systemID = sensortag0.getSystemID()
+			//displayValue('sensorTagLabel0', lookUpSensortagMapping(systemID))
+			displayValue('SystemID0', lookUpSensortagMapping(systemID))
 		}
-
 		displayValue('StatusData0', status)
-		displayValue('SystemID0', sensortag0.getSystemIDToDisplay())
 	}
  
 	
@@ -177,14 +213,29 @@
 			displayValue('StatusData1', 'Error: ' + error)
 		}
 	}
+	
+	/* 
+	* TCM For loooking up SensorTag Name from config file
+	*
+	*/
+	function lookUpSensortagMapping(systemID)
+	{
+		if(sensortagMappingData && sensortagMappingData[systemID])
+		{
+			return sensortagMappingData[systemID]
+		}
+		else
+		{
+			return "Download Configuration File to get SensorTag Name"
+		}
+		
+	}
 
-	function resetSensorDisplayValues()
+	function resetSensorDisplayValues0()
 	{
 		// Clear current values.
 		var blank = '[Waiting for value]'
-		displayValue('StatusData0', 'Press Connect to find a SensorTag')
-		displayValue('DeviceModel0', '?')
-		displayValue('FirmwareData0', '?')
+		displayValue('StatusData0', 'NOT CONNECTED')
 		displayValue('KeypressData0', blank)
 		displayValue('TemperatureData0', blank)
 		displayValue('AccelerometerData0', blank)
@@ -192,11 +243,16 @@
 		displayValue('MagnetometerData0', blank)
 		displayValue('BarometerData0', blank)
 		displayValue('GyroscopeData0', blank)
-		//displayValue('LuxometerData0', blank)
+		displayValue('LuxometerData0', blank)
 
-		displayValue('StatusData1', 'Press Connect to find a SensorTag')
-		displayValue('DeviceModel1', '?')
-		displayValue('FirmwareData1', '?')
+		// Reset screen color.
+		setBackgroundColor('white')
+	}
+
+	function resetSensorDisplayValues1()
+	{
+		var blank = '[Waiting for value]'
+		displayValue('StatusData1', 'NOT CONNECTED')
 		displayValue('KeypressData1', blank)
 		displayValue('TemperatureData1', blank)
 		displayValue('AccelerometerData1', blank)
@@ -204,7 +260,7 @@
 		displayValue('MagnetometerData1', blank)
 		displayValue('BarometerData1', blank)
 		displayValue('GyroscopeData1', blank)
-		//displayValue('LuxometerData1', blank)
+		displayValue('LuxometerData1', blank)
 
 		// Reset screen color.
 		setBackgroundColor('white')
@@ -537,6 +593,11 @@
 		document.getElementById(elementId).innerHTML = value
 	}
 
+	function changeButtonColour(elementId, value)
+	{
+		document.getElementById(elementId).className= value;
+	}
+	
 	function setBackgroundColor(color)
 	{
 		document.documentElement.style.background = color

@@ -733,7 +733,7 @@ input.btn-group.charcoal:checked + label {
 input.stone + label {
 	background-color: #777777;
 }
-/* Downpressed button. */
+/* Downpressed button.	 */
 button.stone:active, button.stone.pressed,
 /* Input element with adjacent label. */
 input.btn-group:active + label.stone,
