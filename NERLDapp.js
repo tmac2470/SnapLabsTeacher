@@ -1,14 +1,29 @@
 var sensortagMappingData
+var expConfigURL = "http://www.cs.usyd.edu.au/~tmac2470/expConfig.json"
+var expConfigURLJSONP = "https://s3-ap-northeast-1.amazonaws.com/nerldconfigs/expConfig.jsonp";
+var sensontagConfigURLJSONP = "https://s3-ap-northeast-1.amazonaws.com/nerldconfigs/sensortagConfig.jsonp";
 
 
 /*
- * CordovaHTTP get test to load a local file
- * this file is local at this stage so no test for remote access
+ * Loading file hosted on AWS S3 as above
+ * 
  */
-loadExpConfig = function() 
+loadExpConfig = function(jsonResponse) 
 {
-		cordovaHTTP.get(
-		"http://www.cs.usyd.edu.au/~tmac2470/expConfig.json",  
+    $.ajax({
+            url: expConfigURLJSONP,
+            jsonpCallback: "callback",
+            cache: false,
+            dataType: "jsonp",
+            success: function(response){
+				if('experimentConfig' in response)
+					experimentConfiguration(response.experimentConfig);
+				else
+					alert('Malformed json...');
+				}
+    });
+		/*cordovaHTTP.get(
+		configURL,  
 		function(response)  // on success
 		{
 			try{  // is the resource well-formed?
@@ -31,7 +46,7 @@ loadExpConfig = function()
 		function(response)   // on error
 		{
 			console.log(JSON.stringify(response));
-		});
+		});*/
 }
 
 
@@ -92,7 +107,23 @@ experimentConfiguration = function(data)
  */
 loadSensortagConfig = function() 
 {
-		cordovaHTTP.get(
+	$.ajax({
+		url: sensontagConfigURLJSONP,
+        jsonpCallback: "callback",
+        cache: false,
+        dataType: "jsonp",
+        success: function(response){
+			if('sensortagMapping' in response)
+			{
+				alert('Successfully downloaded configuration file...');
+				sensortagMappingData = response.sensortagMapping.sensortags;
+			}
+			else
+				alert('Malformed json...');
+		}
+    });
+	 
+	/*cordovaHTTP.get(
 		"http://www.cs.usyd.edu.au/~tmac2470/sensortagConfig.json",  
 		function(response)  // on success
 		{
@@ -107,7 +138,10 @@ loadSensortagConfig = function()
 			if (json){ 
 				//Set html values based on Config file
 				if('sensortagMapping' in json)
+				{
+					//console.log("success in loadSensortagConfig");
 					sensortagMappingData = json.sensortagMapping.sensortags;
+				}
 				else
 					alert('Malformed json...');
 				//document.getElementById("demo2").innerHTML = json.experimentConfig.labTitle;
@@ -116,6 +150,6 @@ loadSensortagConfig = function()
 		function(response)   // on error
 		{
 			console.log(JSON.stringify(response));
-		});
+		});*/
 }
 
