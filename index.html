@@ -44,7 +44,7 @@
 	<script src="libs/jquery/jquery.serializejson.min.js"></script>
 	
 	
-</head>
+</head> 
 <body>
 	<div data-role="page" id="pageone">
         <div data-theme="a" data-role="header">
@@ -60,87 +60,22 @@
 		<form>
 			<label for="name"><strong>Experiment Title:</strong></label>
 			<input type="text" name="labTitle" id="labTitle" value=""  />
+
 			<div data-role="fieldcontain">
 				<label for="addSensortag0Switch"><strong>Add First SensorTag</strong> </label><input type="checkbox" data-role="flipswitch" name="sensorTags[0][connect]" id="addSensortag0Switch" onchange="showHideSensortagConfig(0)">
 			</div> 
- 
 			<div data-role="collapsible" data-theme="b" data-content-theme="a" name="sensorTags[0][connect]" id="sensortag0List" style="display:none;">
-				<h1> First SensorTag Configuration</h1>
-				<label for="name"><strong>Name of First SensorTag:</strong></label>
-				<input type="text" name="labTitle" id="labTitle" value=""  />
-				
-				
-				<div data-role="fieldcontain">
-					<label for="sensorTags[0][sensors][Accelerometer][display]">Accelerometer:</label>
-					<input type="checkbox" data-role="flipswitch" name="sensorTags[0][sensors][Accelerometer][display]" id="accelerometer0flip" onchange="showHideLabel('accelerometer0label')"> 
-				</div>
-				<div data-role="fieldcontain" id="accelerometer0label" style="display:none" class="ui-hide-label">
-					<label for="sensorTags[0][sensors][Accelerometer][label]">Accelerometer Label:</label>
-					<input type="text" name="sensorTags[0][sensors][Accelerometer][label]" value="" placeholder="Accelerometer Label"/>
-				</div>
-
-				<div data-role="fieldcontain">
-					<label for="sensorTags[0][sensors][Humidity][display]">Humidity:</label>
-					<input type="checkbox" data-role="flipswitch" name="sensorTags[0][sensors][Humidity][display]0" id="humidity0-flip" onchange="showHideLabel('humidity0label')">
-				</div>
-				<div data-role="fieldcontain" id="humidity0label" style="display:none" class="ui-hide-label">
-					<label for="sensorTags[0][sensors][Humidity][label]">Humidity Label:</label>
-					<input type="text" name="sensorTags[0][sensors][Humidity][label]" value="" placeholder="Humidity Label"/>
-				</div>
-				
-				<div data-role="fieldcontain">
-					<label for="sensorTags[0][sensors][Magnetometer][display]">Magnetometer:</label>
-					<input type="checkbox" data-role="flipswitch" name="sensorTags[0][sensors][Magnetometer][display]0" id="magnetometer0-flip" onchange="showHideLabel('magnetometer0label')">
-				</div>
-				<div data-role="fieldcontain" id="magnetometer0label" style="display:none" class="ui-hide-label">
-					<label for="sensorTags[0][sensors][Magnetometer][label]">Magnetometer Label:</label>
-					<input type="text" name="sensorTags[0][sensors][Magnetometer][label]" value="" placeholder="Magnetometer Label"/>
-				</div>
-
-				<div data-role="fieldcontain">
-					<label for="sensorTags[0][sensors][Barometer][display]">Barometer:</label>
-					<input type="checkbox" data-role="flipswitch" name="sensorTags[0][sensors][Barometer][display]" id="barometer0-flip" onchange="showHideLabel('barometer0label')">
-				</div>
-				<div data-role="fieldcontain" id="barometer0label" style="display:none" class="ui-hide-label">
-					<label for="sensorTags[0][sensors][Barometer][label]">Barometer Label:</label>
-					<input type="text" name="sensorTags[0][sensors][Barometer][label]" value="" placeholder="Barometer Label"/>
-				</div>
-
-				<div data-role="fieldcontain">
-					<label for="sensorTags[0][sensors][Gyroscope][display]">Gyroscope:</label>
-					<input type="checkbox" data-role="flipswitch" name="sensorTags[0][sensors][Gyroscope][display]" id="gyroscope0-flip" onchange="showHideLabel('gyroscope0label')">
-				</div>
-				<div data-role="fieldcontain" id="gyroscope0label" style="display:none" class="ui-hide-label">
-					<label for="sensorTags[0][sensors][Gyroscope][label]">Gyroscope Label:</label>
-					<input type="text" name="sensorTags[0][sensors][Gyroscope][label]" value="" placeholder="Gyroscope Label" />
-				</div>
-
-				<div data-role="fieldcontain">
-					<label for="sensorTags[0][sensors][Luxometer][display]">Luxometer:</label>
-					<input type="checkbox" data-role="flipswitch" name="sensorTags[0][sensors][Luxometer][display]" id="luxometer0-flip" onchange="showHideLabel('luxometer0label')">
-				</div>
-				<div data-role="fieldcontain" id="luxometer0label" style="display:none" class="ui-hide-label"> 
-					<label for="sensorTags[0][sensors][Luxometer][label]">Luxometer Label:</label>
-					<input type="text" name="sensorTags[0][sensors][Luxometer][label]" value="" placeholder="Luxometer Label" />
-				</div>
-				
-				<div data-role="fieldcontain">
-					<label for="sensorTags[0][sensors][Keypress][display]">Keypress:</label>
-					<input type="checkbox" data-role="flipswitch" name="sensorTags[0][sensors][Keypress][display]" id="keypress0-flip" onchange="showHideLabel('keypress0label')">
-				</div>
-				<div data-role="fieldcontain" id="keypress0label" style="display:none" class="ui-hide-label">
-					<label for="sensorTags[0][sensors][Keypress][label]">Keypress Label:</label>
-					<input type="text" name="sensorTags[0][sensors][Keypress][label]" value="" placeholder="Keypress Label" />
-				</div> 
+				<script> buildSensortagConfigHTML(0) </script>
 			</div>
+
 			
 			<div data-role="fieldcontain">
 				<label for="addSensortag1Switch"><strong>Add Second SensorTag</strong> </label><input type="checkbox" data-role="flipswitch" name="sensorTags[1][connect]" id="addSensortag1Switch" onchange="showHideSensortagConfig(1)">
 			</div> 
-
 			<div data-role="collapsible" data-theme="b" data-content-theme="a" name="sensorTags[1][connect]" id="sensortag1List" style="display:none;">
 				<script> buildSensortagConfigHTML(1) </script>
 			</div>
+
 			
 			<input type="button" data-theme="b" name="submit" id="submit" value="Submit" onclick="submitExperimentConfig()">
 		</form>

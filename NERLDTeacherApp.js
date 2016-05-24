@@ -9,7 +9,7 @@ var uploadPath = "https://s3-ap-northeast-1.amazonaws.com/nerldconfigs/testConfi
 /*
  * buildSensortagConfigHTML 
  * Display SensorTag Config informaion for each sensortag build using html strings for each sensor and tag
- */
+ */ 
 buildSensortagConfigHTML = function(id) 
 {
 	var sensors = ['Temperature','Humidity','Barometer','Accelerometer','Gyroscope','Magnetometer','Luxometer','Keypress'];
@@ -17,10 +17,11 @@ buildSensortagConfigHTML = function(id)
 
 	config.innerHTML = "";
 
-	config.innerHTML += "<h1> Second SensorTag Configuration</h1> <label for='sensorTag" + id + "Name'><strong>Name of SensorTag:</strong></label><input type='text' name='sensorTag" + id + "Name' id='sensorTags[" +id +"][title]' value=''  />" 
-	
-	for(var i=0 ;i<sensors.length;i++){
-		config.innerHTML += "<div data-role='fieldcontain'><label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[display]'>" + sensors[i] + ":</label><input type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors]['" + sensors[i] + "][display]' id='" + sensors[i] + id +"flip' onchange='showHideLabel(\"" + sensors[i] + id + "label\")'> </div>" 
+	config.innerHTML += "<h1>SensorTag Configuration</h1> <label for='sensorTags[" +id +"][title]'><strong>Name of SensorTag:</strong></label><input type='text' name='sensorTags[" +id +"][title]' id='sensorTags" +id +"Name' value=''  />" 
+	for(var i=0 ;i<sensors.length;i++){ 
+		console.log("name='sensorTags[" +id + "][sensors]['" + sensors[i] + "][display]'")
+		
+		config.innerHTML += "<div data-role='fieldcontain'><label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[display]'>" + sensors[i] + ":</label><input type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors][" + sensors[i] + "][display]' id='" + sensors[i] + id +"flip' onchange='showHideLabel(\"" + sensors[i] + id + "label\")'> </div>" 
 		config.innerHTML += "<div data-role='fieldcontain' id='"+ sensors[i] + id + "label' style='display:none' class='ui-hide-label'><label for='sensorTags[" +id +"][sensors][" + sensors[i] + "][label]'> " + sensors[i] + " Label:</label><input type='text' name='sensorTags[" +id +"][sensors][" + sensors[i] + "][label]' value='' placeholder='"+ sensors[i] + " Label'/></div>"
 	}
 }
