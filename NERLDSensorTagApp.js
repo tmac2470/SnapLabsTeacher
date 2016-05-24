@@ -1,12 +1,16 @@
 	var sensortag0
 	var sensortag1
 
+	document.addEventListener(
+		'deviceready',
+		function() { evothings.scriptsLoaded(initialiseSensorTag) },
+		false)
+
 	function initialiseSensorTag()
 	{
 		// Create First SensorTag CC2650 instance.
 		sensortag0 = evothings.tisensortag.createInstance(
 			evothings.tisensortag.CC2650_BLUETOOTH_SMART)
-		sensortag0.LOOKINGFOR = "85a6bf0048b4b0";
 		sensortag0.connected = false;
 
 		sensortag1 = evothings.tisensortag.createInstance(
@@ -173,7 +177,7 @@
 		if ('DEVICE_INFO_AVAILABLE' == status)
 		{
 			var systemID = sensortag0.getSystemID()
-			//displayValue('sensorTagLabel0', lookUpSensortagMapping(systemID))
+			console.log("SystemID is: " + systemID)
 			displayValue('SystemID0', lookUpSensortagMapping(systemID))
 		}
 		displayValue('StatusData0', status)
@@ -182,8 +186,13 @@
 	
 	function statusHandler1(status)
 	{
-		displayValue('StatusData1', status)
-		displayValue('SystemID1', sensortag1.getSystemToDisplay())
+		if ('DEVICE_INFO_AVAILABLE' == status)
+		{
+			var systemID = sensortag1.getSystemID()
+			console.log("SystemID is: " + systemID)
+			displayValue('SystemID1', lookUpSensortagMapping(systemID))
+		}
+		displayValue('SystemID1', status())
 	}
 	
 	function errorHandler(error)
@@ -226,7 +235,7 @@
 		}
 		else
 		{
-			return "Download Configuration File to get SensorTag Name"
+			return "Download or Update Configuration File to get SensorTag Name"
 		}
 		
 	}
@@ -636,7 +645,4 @@
 		return hex
 	}
 
-	document.addEventListener(
-		'deviceready',
-		function() { evothings.scriptsLoaded(initialiseSensorTag) },
-		false)
+

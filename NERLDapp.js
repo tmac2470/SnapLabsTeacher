@@ -22,31 +22,6 @@ loadExpConfig = function(jsonResponse)
 					alert('Malformed json...');
 				}
     });
-		/*cordovaHTTP.get(
-		configURL,  
-		function(response)  // on success
-		{
-			try{  // is the resource well-formed?
-				var json = JSON.parse(response.data); 
-			}
-			catch (ex){   
-				// Invalid JSON, notify of the failure...
-				alert('Could not parse json, aborting...');
-				console.log(response.data)
-			} 
-			if (json){ 
-				//Set html values based on Config file
-				if('experimentConfig' in json)
-					experimentConfiguration(json.experimentConfig);
-				else
-					alert('Malformed json...');
-				//document.getElementById("demo2").innerHTML = json.experimentConfig.labTitle;
-			}
-		}, 
-		function(response)   // on error
-		{
-			console.log(JSON.stringify(response));
-		});*/
 }
 
 
@@ -122,34 +97,5 @@ loadSensortagConfig = function()
 				alert('Malformed json...');
 		}
     });
-	 
-	/*cordovaHTTP.get(
-		"http://www.cs.usyd.edu.au/~tmac2470/sensortagConfig.json",  
-		function(response)  // on success
-		{
-			try{  // is the resource well-formed?
-				var json = JSON.parse(response.data); 
-			}
-			catch (ex){   
-				// Invalid JSON, notify of the failure...
-				alert('Could not parse json, aborting...');
-				console.log(response.data)
-			} 
-			if (json){ 
-				//Set html values based on Config file
-				if('sensortagMapping' in json)
-				{
-					//console.log("success in loadSensortagConfig");
-					sensortagMappingData = json.sensortagMapping.sensortags;
-				}
-				else
-					alert('Malformed json...');
-				//document.getElementById("demo2").innerHTML = json.experimentConfig.labTitle;
-			}
-		}, 
-		function(response)   // on error
-		{
-			console.log(JSON.stringify(response));
-		});*/
 }
 
