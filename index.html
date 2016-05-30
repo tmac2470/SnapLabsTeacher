@@ -35,19 +35,29 @@
 	<script src="libs/evothings/easyble/easyble.js"></script>
 	<script src="https://www.google.com/jsapi"></script>
    	<script src="libs/evothings/tisensortag/tisensortag-nerld.js"></script>
-	<script src="NERLDSensorTagApp.js"></script>
 	<script src="NERLDTeacherApp.js"></script>
 	<script src="NERLDapp.js"></script>
 
 	<script src="libs/jquery/jquery-1.11.3.min.js"></script>
 	<script src="libs/jquery/jquery.mobile-1.4.5.min.js"></script>
 	<script src="libs/jquery/jquery.serializejson.min.js"></script>
-	
+
 	
 </head> 
-<body>
+<body onload="onLoad()"> 
+    <script>
+		var httpd = null;
+
+		function onLoad() {
+			document.addEventListener("deviceready", onDeviceReady, false);
+		}
+		
+
+	
+	</script>
+	
 	<div data-role="page" id="pageone">
-        <div data-theme="a" data-role="header">
+        <div data-theme="b" data-role="header">
 			<p></p><p>
 				<h1> Configure your Experiment </h1> 
             </p>
@@ -58,30 +68,39 @@
 
 		<div data-role="main" class="ui-content">
 		<form>
-			<label for="name"><strong>Experiment Title:</strong></label>
+			<label for="name"><strong>Provide an Experiment Title:</strong></label>
 			<input type="text" name="labTitle" id="labTitle" value=""  />
 
-			<div data-role="fieldcontain">
-				<label for="addSensortag0Switch"><strong>Add First SensorTag</strong> </label><input type="checkbox" data-role="flipswitch" name="sensorTags[0][connect]" id="addSensortag0Switch" onchange="showHideSensortagConfig(0)">
-			</div> 
-			<div data-role="collapsible" data-theme="b" data-content-theme="a" name="sensorTags[0][connect]" id="sensortag0List" style="display:none;">
+			<div data-role="collapsible" data-theme="c" data-content-theme="c" name="sensorTags[0][connect]"  style="display:block;">
+				<h1>First SensorTag Configuration</h1> 
+				<div id="sensortag0List">
 				<script> buildSensortagConfigHTML(0) </script>
+				</div>
 			</div>
 
-			
-			<div data-role="fieldcontain">
-				<label for="addSensortag1Switch"><strong>Add Second SensorTag</strong> </label><input type="checkbox" data-role="flipswitch" name="sensorTags[1][connect]" id="addSensortag1Switch" onchange="showHideSensortagConfig(1)">
-			</div> 
-			<div data-role="collapsible" data-theme="b" data-content-theme="a" name="sensorTags[1][connect]" id="sensortag1List" style="display:none;">
+			<div data-role="collapsible" data-theme="c" data-content-theme="c" name="sensorTags[1][connect]"  style="display:block;">
+				<h1>Second SensorTag Configuration</h1> 
+				<div id="sensortag1List">
 				<script> buildSensortagConfigHTML(1) </script>
+				</div>
 			</div>
 
-			
-			<input type="button" data-theme="b" name="submit" id="submit" value="Submit" onclick="submitExperimentConfig()">
+			<input type="button" data-theme="c" name="submit" id="submit" value="Submit" onclick="getConfigFileName()">
 		</form>
-		</div>
+		
+		<h1> Information Below is for testing Only ... </h1>
+
+		<div id='location'></div>
+		<div id='url'></div>
+		<div id='localpath'></div>
+
+		<button id="Writing" onclick="getFileList()">Listing Files in Directories</button>
+		<ul id="filelist"></ul>
+		
+		<button id="Dumping" onclick="justForTesting()"> Dumping Temp File for Testing</button>
 	</div>
 
+	
 </body>
 </html>
 
