@@ -35,9 +35,8 @@
 	<script src="libs/evothings/easyble/easyble.js"></script>
 	<script src="https://www.google.com/jsapi"></script>
    	<script src="libs/evothings/tisensortag/tisensortag-nerld.js"></script>
-	<script src="NERLDTeacherApp.js"></script>
-	<script src="NERLDapp.js"></script>
-
+	<script src="TeacherApp.js"></script>
+	<script src="TeacherSensorTagConnectionApp.js"></script>
 	<script src="libs/jquery/jquery-1.11.3.min.js"></script>
 	<script src="libs/jquery/jquery.mobile-1.4.5.min.js"></script>
 	<script src="libs/jquery/jquery.serializejson.min.js"></script>
@@ -52,55 +51,163 @@
 			document.addEventListener("deviceready", onDeviceReady, false);
 		}
 		
+		function inputFocus(i){
+			if(i.value==i.defaultValue){ i.value=""; i.style.color="#000"; }
+		}
+		function inputBlur(i){
+			if(i.value==""){ i.value=i.defaultValue; i.style.color="#888"; }
+		}
 
-	
+
 	</script>
 	
-	<div data-role="page" id="pageone">
-        <div data-theme="b" data-role="header">
-			<p></p><p>
-				<h1> Configure your Experiment </h1> 
-            </p>
-			<menu>
 
-			</menu>
+	<div data-role="page" id="pageHome">
+        <div data-theme="a" data-role="header" data-add-back-btn="true">
+			<h1> Welcome to Teacher App </h1> 
+			<a href="#pageSettings" data-icon="gear" class="ui-btn-right">Settings</a>
+		</div>        
+	
+		<div role="main" class="ui-content">
+			<h1>Welcome to the Teacher App.</h1>
+			Here you can configure your SensorTags and design a new experiment for your students
+			<a href="#pageExperiment" data-role="button">Design an Experiment</a>
+			<a href="#pageSensortagConfig" data-role="button">Sensor Tag Configuration</a>
+		</div>
+	</div>
+	
+	<div data-role="page" id="pageExperiment">
+        <div data-theme="a" data-role="header" data-add-back-btn="true">
+			<a href="#pageSettings" data-icon="gear" class="ui-btn-right">Settings</a>
+			<h1> Experiment Design </h1> 
 		</div>        
 
 		<div data-role="main" class="ui-content">
-		<form>
-			<label for="name"><strong>Provide an Experiment Title:</strong></label>
-			<input type="text" name="labTitle" id="labTitle" value=""  />
+			<form id="experimentForm">
+				<label for="name"><strong>Provide an Experiment Title:</strong></label>
+				<input type="text" name="labTitle" id="labTitle" value="SensorTag Experiment"  onfocus="inputFocus(this)" onblur="inputBlur(this)"/>
 
-			<div data-role="collapsible" data-theme="c" data-content-theme="c" name="sensorTags[0][connect]"  style="display:block;">
-				<h1>First SensorTag Configuration</h1> 
-				<div id="sensortag0List">
-				<script> buildSensortagConfigHTML(0) </script>
+
+				<div data-role="collapsible" data-theme="c" data-content-theme="c" name="sensorTags[0][connect]"  style="display:block;">
+					<h1>First SensorTag Configuration</h1> 
+					<div id="sensortag0List">
+					<script> buildSensortagConfigHTML(0) </script>
+					</div>
 				</div>
+
+				<div data-role="collapsible" data-theme="c" data-content-theme="c" name="sensorTags[1][connect]"  style="display:block;">
+					<h1>Second SensorTag Configuration</h1> 
+					<div id="sensortag1List">
+					<script> buildSensortagConfigHTML(1) </script>
+					</div>
+				</div>
+
+				<a href="#pageHome" data-inline="true" data-icon="delete" data-theme="a" data-role="button">Cancel</a>
+				<input type="button" data-inline="true" data-icon="check" data-theme="b" name="submit" id="submit" value="Submit" onclick="getConfigFileName('json')">
+			</form>
+		
+			<script>
+			</script>
+		</div>
+	</div>
+	
+	<div id="pageSensortagConfig" data-role="page" >
+		<div data-theme="a" data-role="header" data-add-back-btn="true">
+			<h1>SensorTag Configuration</h1>
+		</div>
+		<div data-role="content">
+			<div data-role="content" data-theme="b">
+			Use this page to configure your SensorTags to have names associated with unique ID's. <br />
+			You can also set the configuration institution and owner on the file<br />
+			</div>
+			<div  data-role="collapsible" data-content-theme="c">
+			   <h3>Current Configuration File</h3>
+				<p id='sensortagConfigFileData'>
+				</p>
+				<a onclick="viewSensorTagConfigFile()" data-role="button" data-mini="true"> Load latest file </a>
+			</div> 
+ 
+
+			<a href="#pageConfigData" data-role="button" data-inline="true"> Change Institution or Owner </a>
+			<a href="#pageAddSensortags" data-role="button" data-inline="true"> Add or Update SensorTag names</a>
+	
+		</div>
+	</div>
+
+	<div id="pageConfigData" data-role="page" >
+		<div data-role="header" data-add-back-btn="true">
+			<h1>Update SensorTag Configuration</h1>
+		</div>
+		<div data-role="content">
+			<div data-role="content" data-theme="b">
+				Enter new Institution or Owner names below. <br />
+				If you do not want to make changes to a field, leave it blank or select CANCEL.
 			</div>
 
-			<div data-role="collapsible" data-theme="c" data-content-theme="c" name="sensorTags[1][connect]"  style="display:block;">
-				<h1>Second SensorTag Configuration</h1> 
-				<div id="sensortag1List">
-				<script> buildSensortagConfigHTML(1) </script>
-				</div>
-			</div>
+			<form id="sensorTagConfigForm" >
+				<label for="institution"><strong>New Institution Name:</strong></label>
+				<input type="text" name="institution" id="institution" value=""  onfocus="inputFocus(this)" onblur="inputBlur(this)"/>
 
-			<input type="button" data-theme="c" name="submit" id="submit" value="Submit" onclick="getConfigFileName()">
-		</form>
-		
-		<h1> Information Below is for testing Only ... </h1>
+				<label for="owner"><strong>New Owner Name:</strong></label>
+				<input type="text" name="owner" id="owner" value=""  onfocus="inputFocus(this)" onblur="inputBlur(this)"/>
 
-		<div id='location'></div>
-		<div id='url'></div>
-		<div id='localpath'></div>
-
-		<button id="Writing" onclick="getFileList()">Listing Files in Directories</button>
-		<ul id="filelist"></ul>
-		
-		<button id="Dumping" onclick="justForTesting()"> Dumping Temp File for Testing</button>
+				<a href="#pageSensortagConfig" data-inline="true" data-icon="delete" data-theme="a" data-role="button" >Cancel</a>
+				<input type="button" data-inline="true" data-icon="check" data-theme="b" name="submit" id="institutionOwnerUpdateSubmit" value="Submit" onclick="	updateInstitutionOwner()">
+			</form>
+		</div>
 	</div>
 
 	
+	<div id="pageAddSensortags" data-role="page" >
+		<div data-role="header" data-add-back-btn="true">
+			<h1>Add SensorTags to configuration file</h1>
+		</div>
+		<div data-role="content">
+			<div id="sensortagScanning" >
+			<div data-role="content" data-theme="b">
+				To add SensorTags to the configuration file: <br />
+				1. Start scanning for available SensorTags. <br />
+				2. Select the SensorTag to connect to. <br />
+				3. Press any key on the SensorTag to create or update the SensorTag name.
+			</div>
+
+			<button id="startScanButton" onclick="app.ui.onStartScanButton()" class="green" style="display:block" data-inline="true">
+				START SCANNING FOR SENSORTAGS
+			</button>
+
+			<button id="pauseScanButton" onclick="app.ui.onPauseScanButton()" class="charcoal" style="display:none" data-inline="true">
+				PAUSE SCANNNING
+			</button>
+
+			<p><strong>Scan Status: </strong><span id="scan-status">Scanning Paused</span></p>
+			<p><strong>SensorTag Connection Status: </strong> <span id="StatusData">Select to add SensorTag to configuration File</span></p>
+			<div id="deviceInfo" style="display:none">
+				<p><strong> <span id="KeypressData">Press any key to on the SensorTag to add it to the configuration file</strong> </span> </p>
+				<p>
+					SensorTag device model: <span id="DeviceModel">?</span><br />
+					Firmware version: <span id="FirmwareData">?</span><br />
+					SensorTag SystemID: <span id="SystemID">?</span><br />
+				</p>
+			</div>
+			<div data-inset="true" id="found-devices" class="dynamic"></div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<div id="pageSettings" data-role="page" >
+		<div data-role="header" data-add-back-btn="true"><h1>Settings</h1></div>
+		<div data-role="content">
+			<script> //updateStatus() </script>
+
+			<h1>Local Server Details</h1>
+			<div id='url'>Address </div>
+			<div id='localpath'></div>
+			<div id='location'></div>
+		</div>
+	</div>
+
 </body>
 </html>
 

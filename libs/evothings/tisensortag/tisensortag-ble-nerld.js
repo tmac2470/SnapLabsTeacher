@@ -417,8 +417,11 @@
 
 		/**
 		 * Public. TCM
-		 * NOT WORKING YET
-		 * Connect to the SensorTag device with specified SystemID.
+		 *
+		 * This is valid only for Android where the address of the device is available in advertised data.
+		 * Changes for iOS to connect to nearest device and read data
+		 *
+		 * Connect to the SensorTag device with specified Address (or SystemID).
 		 * For this to work reliably SensorTags should be at least a
 		 * couple of meters apart.
 		 * @param scanTimeMilliseconds The time to scan for nearby
@@ -426,12 +429,12 @@
 		 * @instance
 		 * @public
 		 */
-		instance.connectToSensorTagSystemID = function(scanTimeMilliseconds)
+		instance.connectToSensorTagAddress = function(scanTimeMilliseconds, lookingFor, callback)
 		{
 			instance.callStatusCallback(sensortag.status.SCANNING)
 			instance.disconnectDevice()
 			evothings.easyble.stopScan()
-			evothings.easyble.reportDeviceOnce(false)
+			evothings.easyble.reportDeviceOnce(true) // was false TCM
 
 			//var nearestDevice = null
 			//var strongestRSSI = -1000
@@ -439,13 +442,13 @@
 			var scanTimeoutStarted = false
 			var noTagFoundTimer = null
 
-			// Timer that connects to the nearest SensorTag efter the
+			// Timer that connects to the nearest SensorTag after the
 			// specified timeout.
 			function startConnectTimer()
 			{
 				// Set timeout period.
 				scanTimeMilliseconds = (('undefined' == typeof scanTimeMilliseconds)
-					? 1000 // Default scan time is 3 seconds
+					? 500 // Default scan time is 1.5 seconds
 					: scanTimeMilliseconds) // Use user-set value
 
 				// Start timer.
@@ -453,10 +456,13 @@
 					function() {
 						if (correctDevice)
 						{
+							//console.log("DEBUG - Connecting to device now (having found address) ...")
 							evothings.easyble.stopScan()
 							instance.callStatusCallback(
 								sensortag.status.SENSORTAG_FOUND)
-							instance.connectToDevice(nearestDevice)
+							//instance.connectToDevice(correctDevice)*/
+							// TCM trying to alert for message
+							instance.connectAndAddToConfig(correctDevice,callback);
 						}
 					},
 					scanTimeMilliseconds)
@@ -490,10 +496,12 @@
 			// Called when a device is found during scanning.
 			function deviceFound(device)
 			{
-				console.log("Reading SystemID");
+
+				console.log("Reading Address " + device.address + " while looking for " + lookingFor);
 				
-				// Update the device if it has the same SystemID
-				if (device.rssi != 127 && instance.deviceIsSensorTag(device) && instance.systemIDString == instance.LOOKINGFOR)
+				// Update the device if it has the same address in the advertised data
+				// Valid for Android only. iOS will have to read SystemID and convert this suitably.
+				if (device.rssi != 127 && instance.deviceIsSensorTag(device) && device.address == lookingFor)
 				{
 					console.log('deviceFound: ' + device.name)
 
@@ -501,6 +509,7 @@
 					// start the timer that makes the connection.
 					if (!correctDevice)
 					{
+						console.log('First found ... connecting to ' + device.name)
 						stopNoTagFoundTimer()
 						startConnectTimer()
 					}
@@ -519,7 +528,7 @@
 
 			// Start scanning.
 			evothings.easyble.startScan(deviceFound, scanError)
-
+			
 			return instance
 		}
 
@@ -545,7 +554,7 @@
 
 			// Called when a device is found during scanning.
 			function deviceFound(device)
-			{
+			{ 
 				// 127 is an invalid (unknown) RSSI value reported occasionally.
 				if (device.rssi != 127)
 				{
@@ -580,6 +589,27 @@
 
 		
 		/**
+		 * Connect to a SensorTag BLE device and alert user.
+		 * @param device A Bluetooth Low Energy device object.
+		 * @instance
+		 * @public
+		 */
+		instance.connectAndAddToConfig = function(device, callback)
+		{
+			instance.device = device
+			instance.callStatusCallback(sensortag.status.CONNECTING)
+			//console.log("DEBUG - in instance.connectAndAddToConfig")
+			instance.device.connect(
+				function(device) 
+				{
+					instance.callStatusCallback(sensortag.status.CONNECTED)
+					//console.log("DEBUG - in instance.connectToDevice - going to read device info")
+					instance.readDeviceInfo(callback)
+				},
+				instance.errorFun)
+		}
+
+		/**
 		 * Connect to a SensorTag BLE device.
 		 * @param device A Bluetooth Low Energy device object.
 		 * @instance
@@ -589,10 +619,12 @@
 		{
 			instance.device = device
 			instance.callStatusCallback(sensortag.status.CONNECTING)
+			//console.log("DEBUG - in instance.connectToDevice - before connect")
 			instance.device.connect(
-				function(device)
+				function(device) 
 				{
 					instance.callStatusCallback(sensortag.status.CONNECTED)
+					//console.log("DEBUG - in instance.connectToDevice - going to read device info")
 					instance.readDeviceInfo()
 				},
 				instance.errorFun)
@@ -614,12 +646,13 @@
 			return instance
 		}
 
+
 		/**
 		 * Internal. When connected we read device info and services.
 		 * @instance
 		 * @private
 		 */
-		instance.readDeviceInfo = function()
+		instance.readDeviceInfo = function(callback)
 		{
 			function readDeviceInfoService()
 			{
@@ -694,7 +727,8 @@
 				// Set model number.
 				var sID = new Uint8Array(data)
 				
-				// Set Up System ID for the SensorTag - specific for NERLD implementation
+				// TCM
+				// Set Up System ID for the SensorTag - specific for NERLD implementation 
 				var display = 'B0:B4:48';
 				//Read first 3 bytes backward and convert to Hex
 				for (var i=2; i>=0; i--){
@@ -746,6 +780,16 @@
 					instance.requiredServices,
 					instance.activateSensors,
 					instance.errorFun)
+					
+				//console.log("DEBUG - Services read")
+				if(callback && typeof(callback) == "function"){
+					callback(instance.device)
+				}
+			}
+			
+			function addToConfigFile()
+			{
+				
 			}
 
 			// Start by reading model number. Then read other
@@ -762,12 +806,11 @@
 		{
 			// Debug logging.
 			//console.log('-------------------- SERVICES --------------------')
-			//sensortag.logServices(instance.device)
+			//console.log('Added ' + )
 			//console.log('---------------------- END -----------------------')
 
 			// Call implementation method in sub module.
 			instance.activateSensorsImpl()
-
 			instance.callStatusCallback(sensortag.status.SENSORTAG_ONLINE)
 		}
 
@@ -786,6 +829,7 @@
 				instance.temperatureFun
 			)
 
+			
 			return instance
 		}
 
@@ -903,6 +947,7 @@
 			periodValue,
 			notificationFunction)
 		{
+			//console.log("DEBUG - Turning on " + service.SERVICE)
 			// Only start sensor if a notification function has been set.
 			if (!notificationFunction) { return }
 

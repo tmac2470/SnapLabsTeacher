@@ -193,7 +193,8 @@
 			//console.log('-------------------- SERVICES --------------------')
 			//sensortag.logServices(instance.device)
 			//console.log('---------------------- END -----------------------')
-
+			
+			//console.log("DEBUG - Turning on sensors in tisensortag-ble-cc2650.js")
 			instance.temperatureOn()
 			instance.humidityOn()
 			instance.barometerOn()
