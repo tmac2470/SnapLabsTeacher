@@ -63,7 +63,7 @@ app.startScan = function(callbackFun)
 					console.log("Not a sensorTag")
 				}
 			}
-		},
+		}, 
 		function(errorCode)
 		{
 			// Report error.

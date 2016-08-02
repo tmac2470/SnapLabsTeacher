@@ -9,10 +9,9 @@ var sensortagMappingData
 //var uploadPath = "https://s3-ap-northeast-1.amazonaws.com/nerldconfigs/testConfig.jsonp";
 
 var localPath = '10.17.43.1:8080';
-var newDirectoryName = "TeacherAppConfigFiles"
 var serverroot;
 var jsonFormat;
-var workingDir; 		//Directory Entry
+var workingDir; 		//Directory Entry for configuration files
 
 // Experiment COnfiguration File 
 var expConfigFileName = "expConfig.jsonp"
@@ -34,7 +33,8 @@ var sensorFileWriter; 	// Filewriter for the sensortag config file
 function onDeviceReady() {
 	
 	// Get the File system for writing the experiment configuration file
-	window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function(dir) {
+	//window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function(dir) {
+	window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(dir) {
 		 dir.getDirectory(newDirectoryName, { create: true }, function (dirEntry) {
 			// Setting up the files and directories
 			workingDir = dirEntry;
@@ -53,10 +53,11 @@ function onDeviceReady() {
 	stopServer();
 	
 	// Start the server at the data directory. 
-	serverroot = cordova.file.dataDirectory.replace( 'file://', '' );
+	serverroot = cordova.file.externalDataDirectory.replace( 'file://', '' );
 	startServer(serverroot + newDirectoryName);
 
 }
+
 
 /*
  * Creating a file
@@ -217,15 +218,24 @@ function listResults(entries) {
   document.querySelector('#filelist').appendChild(fragment);
 }
 
-function getFileList() {
-  var dirReader = workingDir.createReader();
+listConfigFiles = function(viewID)
+{
+	console.log("DEBUG - View ID is " + viewID)
+	document.getElementById(viewID).innerHTML="";
+	getFileList(workingDir, viewID, listConfigFilesResults);
+}
+
+
+function getFileList(dir, viewID, callback) {
+  var dirReader = dir.createReader();
   var entries = [];
+  console.log("DEBUG - getting file list for: " + dir.fullPath + " to put in " + viewID)
 
   // Call the reader.readEntries() until no more results are returned.
   var readEntries = function() {
      dirReader.readEntries (function(results) {
       if (!results.length) {
-        listResults(entries.sort());
+        callback(entries.sort(), viewID);
       } else {
         entries = entries.concat(toArray(results));
         readEntries();
@@ -236,7 +246,51 @@ function getFileList() {
   readEntries(); // Start reading dirs.
 }
 
+function listConfigFilesResults(entries, viewID) {
+  // Document fragments can improve performance since they're only appended
+  // to the DOM once. Only one browser reflow occurs.
+  //var fragment = document.createDocumentFragment();
 
+  entries.forEach(function(entry, i) {
+    //var li = document.createElement('li');
+    //li.innerHTML = ['<a class=" ui-icon-grid" onclick="loadExpConfig()">', entry.name, '</a>'].join('');
+	var li = "<li><a onclick='socialShareFile(\"" + entry.fullPath +"\")'> " + entry.name + "</a> </li>"
+    document.getElementById(viewID).innerHTML += li;
+  }); 
+}
+
+/*
+ * Social Sharing plugin uses the following finctions
+ * Based on  https://github.com/EddyVerbruggen/SocialSharing-PhoneGap-Plugin
+ */
+ 
+var onSuccess = function(result) {
+  console.log("Share completed? " + result.completed); // On Android apps mostly return false even while it's true
+  console.log("Shared to app: " + result.app); // On Android result.app is currently empty. On iOS it's empty when sharing is cancelled (result.completed=false)
+}
+
+var onError = function(msg) { 
+  console.log("Sharing failed with message: " + msg);
+}
+
+var socialShareFile = function(fileShare) {
+	//var fileName = "file://file" + fileShare
+	//var fileName = filePath
+	fileName = window.cordova.file.externalDataDirectory + fileShare
+	console.log("DEBUG - social sharing " + fileName)
+
+	window.plugins.socialsharing.shareViaEmail(
+		'Please find attached the configuration file for Teacher App', // can contain HTML tags, but support on Android is rather limited:  http://stackoverflow.com/questions/15136480/how-to-send-html-content-with-image-through-android-default-email-client
+		'Configuration File from Teacher App',
+		['taniaNerld@gmail.com'], // TO: must be null or an array
+		['taniamachet@gmail.com'], // CC: must be null or an array
+		null, // BCC: must be null or an array
+		[fileName], // FILES: can be null, a string, or an array
+		onSuccess, // called when sharing worked, but also when the user cancelled sharing via email. On iOS, the callbacks' boolean result parameter is true when sharing worked, false if cancelled. On Android, this parameter is always true so it can't be used). See section "Notes about the successCallback" below.
+		onError // called when sh*t hits the fan
+	);
+} 
+ 
 /*
  * Read the SensorTag Configuration file
  */
@@ -251,7 +305,8 @@ function readSensorTagConfigFile(callback, newData) {
 			}
 			catch (ex){   
 				// Invalid JSON, notify of the failure...
-				alert('Could not parse json, aborting...');
+				alert('Could not parse the SensorTag configuration File.  Please create a new one.');
+				showElementView('overwriteSensortagConfigFile');
 				console.log(this.result)
 			} 
 			if (json){ 
@@ -262,13 +317,17 @@ function readSensorTagConfigFile(callback, newData) {
 					sensortagMappingData = json;
 					callback(sensortagMappingData, newData)
 				}
-				else 
-					alert('Malformed json...');
+				else {
+					alert('Could not parse the SensorTag configuration File.  Please create a new one.');
+					showElementView('overwriteSensortagConfigFile');
+					console.log(this.result)
+				}
 				//document.getElementById("demo2").innerHTML = json.experimentConfig.labTitle;
 			}
 		};
 		reader.readAsText(file);
 	}, errorHandler);
+
 
 }
 
@@ -279,6 +338,22 @@ function viewSensorTagConfigFile() {
 	readSensorTagConfigFile(showSensorTagConfigFile);
 }
 
+/*
+ * Create a new SensorTag Configuration file
+ */
+function newSensorTagConfigFile() {
+	// overwrite existing file
+	
+	var dataObjTemp = $('#newSensorTagConfigForm').serializeJSON();
+	
+	var data = {}
+	data.sensortagMapping = {}
+	data.sensortagMapping.institution = dataObjTemp.institution 
+	data.sensortagMapping.owner = dataObjTemp.owner
+	data.sensortagMapping.sensortags = {};
+	console.log("DEBUG - new file string is:" + JSON.stringify(data))
+    writeTextToFile(sensorFile, JSON.stringify(data), false);
+}
 /*
  * Show the SensorTag Configuration file view
  */
@@ -496,7 +571,10 @@ onPromptFileName = function(results) {
 	 
 	if(results.buttonIndex===1){
 		alert("Your configuration " + jsonFormat + " file has been saved to: " + expConfigFileName + ".\n\n Please make a note of this name.");
+		$('[type="reset"]').button('enable');
+		$('[type="reset"]').button('refresh');
 		submitExperimentConfig();
+		
 	}else{
 		alert("No file saved");
 	}
@@ -538,9 +616,10 @@ buildSensortagConfigHTML = function(id)
 	var config = document.getElementById('sensortag'+id+'List');
 
 	config.innerHTML = "";
-
 	config.innerHTML +=	"<div data-role='fieldcontain'><label for='addSensortag" +id +"'><strong>Display SensorTag</strong></label><input type='checkbox' data-role='flipswitch' name='sensorTags["+id+"][connect]' id='addSensortag"+id+"'></div>"
 	config.innerHTML += "<label for='sensorTags[" +id +"][title]'><strong>Name of SensorTag:</strong></label><input type='text' name='sensorTags[" +id +"][title]' id='sensorTags" +id +"Name' value='Sensortag " + id +"' onfocus='inputFocus(this)' onblur='inputBlur(this)'/>" 
+
+
 	//onchange='showHideSensortagConfig("+id+")'></div>"
 
 	for(var i=0 ;i<sensors.length;i++){ 
@@ -599,58 +678,6 @@ dumpLocalFile = function()
 	});
 }
 
-
-/*
- * experimetConfiguration 
- * Change app layout based on input from COnfig file
- */
-experimentConfiguration = function(data) 
-{
-	//var expFrame = document.getElementById('experiment').contentWindow.document;
-	//expFrame.open();
-	//document.getElementById('experiment').style.display = "block";
-	var experiment = document.getElementById('experiment')
-    
-	//Set Title of experiment
-	if('labTitle' in data){
-		document.getElementById("labTitle").innerHTML = data.labTitle;
-	}else{
-		document.getElementById("labTitle").innerHTML = "Default Experiment Title";
-	}
-	
-	// Clear experiment data
-	experiment.innerHTML = "";
-	
-	// Display the SensorTags according to the configfle
-	for(id in data.sensorTags){
-		var sensorTagData = data.sensorTags[id];
-		
-		//Diplay SensorTag data if configured
-		if(sensorTagData.connect==="1"){
- 			// Add each SensorTag name and a connect button for each
-			experiment.innerHTML += "<p><button onclick=\"connection("+id+")\" class=\"green\" id=\"connectionButton"+id+"\"> Connect to "+sensorTagData.title+"	</button></p>";
-			experiment.innerHTML += "<h2 id=\"sensorTagLabel"+id+"\"> "+sensorTagData.title+": <span id=\"SystemID"+id+"\">SensorTag ID</span> </h2>";
-			experiment.innerHTML += "<p><strong>Status "+id+":</strong> <span id=\"StatusData"+id+"\">NOT CONNECTED</span></p>";
-			//experiment.innerHTML += "<p><strong>Identifier "+id+":</strong> <span id=\"SystemID"+id+"\">SensorTag ID</span></p>";
-
-			//console.log("<p><button onclick=\"connection("+id+")\" class=\"green\" id=\"connectionButton"+id+"\"> Connect to "+sensorTagData.title+"	</button></p>")
-
-				for(sensor in sensorTagData.sensors){
-				var sensorProps = sensorTagData.sensors[sensor]
-
-				// Use default label in case 
-				var sensorLabel = sensorProps.label==="" ? sensor+ " " +id : sensorProps.label;
-
-				//Set up each div for the sensors
-				experiment.innerHTML += "<div id=\""+sensor+id+"\" class=\"sensorReadingEntry\"><p><span id=\""+sensor+"Label"+id+"\" class=\"sensorReadingLabel\"><strong>" + sensorLabel +": </strong></span><span id=\""+sensor+"Data"+id+"\" class=\"sensorReadingValue\"> Waiting for value </span></p></div><p>";
-				
-				//Hide the div if required
-				document.getElementById(sensor+id).style.display = sensorProps.display===1 ? "block" : "none";
-			}
- 		}
-	}
-}
- 
 /*
  * CordovaHTTP get test to load a local file
  * Load the sensortag mapping data file
@@ -676,7 +703,7 @@ loadSensortagConfig = function()
 }
 
 /* 
- * Corhttpd Functions
+ * Corhttpd Functions 
  * https://github.com/floatinghotpot/cordova-httpd
  */
 
@@ -689,7 +716,7 @@ function updateStatus() {
 	  */
 		httpd.getURL(function(url){
 			if(url.length > 0) {
-				document.getElementById('url').innerHTML = "The server is up at: <a href='" + url + "' target='_blank'>" + url + "</a>";
+				document.getElementById('url').innerHTML = "The server is up at: <a href='" + url + "' target='_self'>" + url + "</a>";
 			} else {
 				document.getElementById('url').innerHTML = "The server is down.";
 			}
@@ -749,3 +776,4 @@ function stopServer() {
 		alert('CorHttpd plugin not available/ready.');
 	}
 }
+
