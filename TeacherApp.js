@@ -605,7 +605,7 @@ submitExperimentConfig = function()
 		writeTextToFileAndCopy(tempFile, openingStrJson + JSON.stringify(dataObj) + closingStringJson, isAppend, tempFileName, expConfigFileName ); 
 	}
 }
-
+ 
 /*
  * buildSensortagConfigHTML 
  * Display SensorTag Config information for each sensortag build using html strings for each sensor and tag
@@ -615,7 +615,9 @@ buildSensortagConfigHTML = function(id)
 	var sensors = ['Temperature','Humidity','Barometer','Accelerometer','Gyroscope','Magnetometer','Luxometer','Keypress'];
 	var config = document.getElementById('sensortag'+id+'List');
 
+	// Clear form
 	config.innerHTML = "";
+	// Fields for "Display SensorTag" and "Name of SensorTag"
 	config.innerHTML +=	"<div data-role='fieldcontain'><label for='addSensortag" +id +"'><strong>Display SensorTag</strong></label><input type='checkbox' data-role='flipswitch' name='sensorTags["+id+"][connect]' id='addSensortag"+id+"'></div>"
 	config.innerHTML += "<label for='sensorTags[" +id +"][title]'><strong>Name of SensorTag:</strong></label><input type='text' name='sensorTags[" +id +"][title]' id='sensorTags" +id +"Name' value='Sensortag " + id +"' onfocus='inputFocus(this)' onblur='inputBlur(this)'/>" 
 
@@ -623,8 +625,50 @@ buildSensortagConfigHTML = function(id)
 	//onchange='showHideSensortagConfig("+id+")'></div>"
 
 	for(var i=0 ;i<sensors.length;i++){ 
-		config.innerHTML += "<div data-role='fieldcontain' ><label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[display]'>" + sensors[i] + ":</label><input  class='sensortag"+id+"' type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors][" + sensors[i] + "][display]' id='" + sensors[i] + id +"flip' onchange='showHideLabel(\"" + sensors[i] + id + "label\")'> </div>" 
-		config.innerHTML += "<div data-role='fieldcontain' id='"+ sensors[i] + id + "label' style='display:none' class='ui-hide-label' ><label for='sensorTags[" +id +"][sensors][" + sensors[i] + "][label]'> " + sensors[i] + " Label:</label><input type='text' name='sensorTags[" +id +"][sensors][" + sensors[i] + "][label]' value='' placeholder='"+ sensors[i] + " Label'/></div>"
+		// Changed to using a temporary string to make this more readable
+		var tempString = ""
+		// Side by side flip switches
+		tempString += "<fieldset class='ui-grid-a'>"
+			tempString += "<div class='ui-block-a'>"
+				// Flip switch for data display
+				tempString += "<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[display]'>" + sensors[i] + " Data:</label>"
+				tempString += "<input  class='sensortag"+id+"' type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors][" + sensors[i] + "][display]' id='" + sensors[i] + id +"flip' onchange='showHideLabel(\"" + sensors[i] + id + "label\")'>"
+			tempString += "</div>"
+			tempString += "<div class='ui-block-b'>"
+				// Flip switch for graph diplay
+				tempString += "<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[graph]'>" + sensors[i] + " Graph:</label>"
+				tempString += "<input  class='sensortag"+id+"' type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors][" + sensors[i] + "][graph]' id='" + sensors[i] + id +"flipGraph' style='display:none' onchange='showHideLabel(\"" + sensors[i] + id + "labelGraph\")'> "
+			tempString += "</div>"
+		tempString += "</fieldset>"
+		
+		// Label for the temperature data
+		tempString += "<div id='"+ sensors[i] + id + "label' style='display:none' >" 
+			tempString += "<label for='sensorTags[" +id +"][sensors][" + sensors[i] + "][label]'>"  + sensors[i] + " Data Label:</label>"
+			tempString += "<input type='text' name='sensorTags[" +id +"][sensors][" + sensors[i] + "][label]' value='' placeholder='"+ sensors[i] + " Label'/>"
+		tempString += "</div>"
+			
+		// Labels for the temperature graph
+		tempString += "<div id='"+ sensors[i] + id + "labelGraph' style='display:none' >" 
+			// Graph Title
+			tempString += "<label for='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphTitle]'>"  + sensors[i] + " Graph Title:</label>"
+			tempString += "<input type='text' name='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphTitle]' value='' placeholder='"+ sensors[i] + " Graph Label'/>"
+			// Graph x-axis
+			tempString += "<label for='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphXAxis]'>"  + sensors[i] + " X Axis Title:</label>"
+			tempString += "<input type='text' name='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphXAxis]' value='' placeholder='"+ sensors[i] + " Graph X Axis Label'/>"
+			// Graph y-axis
+			tempString += "<label for='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphYAxis]'>"  + sensors[i] + " Y Axis Title:</label>"
+			tempString += "<input type='text' name='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphYAxis]' value='' placeholder='"+ sensors[i] + " Graph Y Axis Label'/>"
+		tempString += "</div>"
+		
+		
+		config.innerHTML += tempString
+		//config.innerHTML += "<fieldset class='ui-grid-a'>     <div class='ui-block-a'>     <div  data-role='fieldcontain' ><label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[display]'>" + sensors[i] + " Data:</label><input  class='sensortag"+id+"' type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors][" + sensors[i] + "][display]' id='" + sensors[i] + id +"flip' onchange='showElementView(\"" + sensors[i] + id + "label\")'>        </div>         </div>     <div class='ui-block-b'><div data-role='fieldcontain' ><label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[graph]'>" + sensors[i] + " Graph:</label><input  class='sensortag"+id+"' type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors][" + sensors[i] + "][graph]' id='" + sensors[i] + id +"flipGraph' style='display:none' onchange='showElementView(\"" + sensors[i] + id + "label\")'> </div> </div> </fieldset class>" 
+		// Fields for each sensor:  field with flip switch to allow sensor graphing 
+		//config.innerHTML += "<div class='ui-block-b'><div data-role='fieldcontain' ><label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[graph]'>" + sensors[i] + " Graph:</label><input  class='sensortag"+id+"' type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors][" + sensors[i] + "][graph]' id='" + sensors[i] + id +"flipGraph' style='display:none' onchange='showElementView(\"" + sensors[i] + id + "label\")'> </div> </div> </fieldset class>" 		
+
+		// Fields for each sensor: hidden field to name sensor 
+		//config.innerHTML += "<div data-role='fieldcontain' id='"+ sensors[i] + id + "label' style='display:none' class='ui-hide-label' ><label for='sensorTags[" +id +"][sensors][" + sensors[i] + "][label]'> " + sensors[i] + " Label:</label><input type='text' name='sensorTags[" +id +"][sensors][" + sensors[i] + "][label]' value='' placeholder='"+ sensors[i] + " Label'/></div>"
+
 	}
 }
 

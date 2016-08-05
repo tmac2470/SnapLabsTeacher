@@ -497,7 +497,7 @@
 			function deviceFound(device)
 			{
 
-				console.log("Reading Address " + device.address + " while looking for " + lookingFor);
+				console.log("DEBUG - Reading Address " + device.address + " while looking for " + lookingFor);
 				
 				// Update the device if it has the same address in the advertised data
 				// Valid for Android only. iOS will have to read SystemID and convert this suitably.

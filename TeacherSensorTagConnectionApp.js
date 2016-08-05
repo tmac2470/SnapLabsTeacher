@@ -164,7 +164,8 @@ app.ui.displayDeviceList = function()
 				+ '</br>'
 			);
 			$('#found-devices').append(element);
-		}
+			console.log("DEBUG - Found and element with " + device.address)
+		} 
 	});
 };
 
