@@ -3,7 +3,7 @@
 	Demonstration of the TI SensorTag JavaScript library.
 -->
 <html>
-
+ 
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, user-scalable=no,
@@ -15,7 +15,6 @@
 	<title>Gen 2 Teacher APP</title>
 
 	<style> 
-		@import 'ui/css/evothings-app.css';
 		@import 'ui/css/nerld.css';
 		@import 'ui/css/jquery.mobile-1.4.5.min.css';
 	</style>
@@ -40,8 +39,8 @@
 	<script src="libs/jquery/jquery-1.11.3.min.js"></script>
 	<script src="libs/jquery/jquery.mobile-1.4.5.min.js"></script>
 	<script src="libs/jquery/jquery.serializejson.min.js"></script>
- 
-	
+
+	 
 </head> 
 <body onload="onLoad()"> 
     <script>
@@ -60,46 +59,58 @@
 
 
 	</script>
-	
+	 
 
-	<div data-role="page" id="pageHome">
-        <div data-theme="a" data-role="header" data-add-back-btn="true">
-			<h1> Welcome to Teacher App </h1> 
+	<div data-role="page" id="pageHome" data-theme="b">
+        <div  data-role="header" data-add-back-btn="true">
+			<h1> Asell Teacher App </h1> 
 			<a href="#pageServerDetails" data-icon="gear" class="ui-btn-right">Server Details</a>
 		</div>        
-	
-		<div role="main" class="ui-content">
-			<h1>Welcome to the Teacher App.</h1>
-			Here you can configure your SensorTags and design a new experiment for your students
-			<a href="#pageExperiment" data-role="button">Design an Experiment</a>
+		
+		<div data-role="content" data-theme="b">
+			<h1 class="logo" >ASELL Teacher App <img src="ui/images/GrayLogoColour2.jpg"></h1>
+				Here you can configure your SensorTags with names or design a new experiment for your students.
+				The files you create can be shared and are also available on the local server (See <a href="#pageServerDetails"> Server Details </a>).<br>
 			<a href="#pageSensortagConfig" data-role="button">Sensor Tag Configuration</a>
+			<a href="#pageExperiment" data-role="button">Design an Experiment</a>
 			<a href="#pageShareFiles" data-role="button">Share Your Files</a>
 		</div>
 	</div>
 	  
-	<div data-role="page" id="pageExperiment">
-        <div data-theme="a" data-role="header" data-add-back-btn="true">
-			<a href="index.html" class="ui-btn ui-icon-home ui-btn-icon-left">Home</a>
-			<a href="#pageSettings" data-icon="gear" class="ui-btn-right">Settings</a>
+	<div data-role="page" id="pageExperiment" data-theme="b">
+        <div data-role="header" data-add-back-btn="true">
+			<a href="#pageSettings" data-icon="gear" class="ui-btn-right">Server Details</a>
 			<h1> Experiment Design </h1> 
 		</div>        
 
 		<div data-role="main" class="ui-content">
+			<h1 class='logo'>
+				Design an Experiment
+				<img src="ui/images/GrayLogoColour2.jpg">
+			</h1>
 			<form id="experimentForm">
 				<label for="name"><strong>Provide an Experiment Title:</strong></label>
-				<input type="text" name="labTitle" id="labTitle" value="SensorTag Experiment"  onfocus="inputFocus(this)" onblur="inputBlur(this)"/>
-				<div data-role="fieldcontain"><label for="addDataStorage">Allow Data Storage</label><input type="checkbox" data-role="flipswitch" name="dataStorageAllowed" id="dataStorageAllowed" onchange="showHideLabel('dataStoragePrefixLabel')" ></div>
-				<div data-role="fieldcontain" id="dataStoragePrefixLabel" + id + "label" style="display:none"><label for="dataStoragePrefix"> Prefix for Data Storage File:</label><input type="text" name="dataStoragePrefix" value="" placeholder="sensorTag"/></div>
+				<input data-theme="a" type="text" name="labTitle" id="labTitle" value="SensorTag Experiment" />
+				
+				<div data-role="fieldcontain">
+					<label for="addDataStorage">Allow Data Storage</label>
+					<input  data-theme="a" type="checkbox" data-role="flipswitch" name="dataStorageAllowed" id="dataStorageAllowed" onchange="showHideLabel('dataStoragePrefixLabel')" >
+				</div>
+				
+				<div data-role="fieldcontain" id="dataStoragePrefixLabel" + id + "label" style="display:none">
+					<label for="dataStoragePrefix"> Prefix for Data Storage File:</label>
+					<input  data-theme="a"type="text" name="dataStoragePrefix" value="" placeholder="sensorTag"/>
+				</div>
 
-				<div data-role="collapsible" data-theme="c" data-content-theme="c" name="sensorTags[0][connect]"  style="display:block;">
-					<h1>First SensorTag Configuration</h1> 
+				<div data-role="collapsible" data-content-theme="a" name="sensorTags[0][connect]"  style="display:block;" class="asellList">
+					<h3>First SensorTag Configuration</h3> 
 					<div id="sensortag0List">
 					<script> buildSensortagConfigHTML(0) </script>
 					</div>
 				</div>
 
-				<div data-role="collapsible" data-theme="c" data-content-theme="c" name="sensorTags[1][connect]"  style="display:block;">
-					<h1>Second SensorTag Configuration</h1> 
+				<div data-role="collapsible" data-content-theme="a" name="sensorTags[1][connect]"  style="display:block;" class="asellList">
+					<h3>Second SensorTag Configuration</h3> 
 					<div id="sensortag1List">
 					<script> buildSensortagConfigHTML(1) </script>
 					</div>
@@ -114,21 +125,23 @@
 		</div>
 	</div>
 	
-	<div id="pageSensortagConfig" data-role="page" >
-		<div data-theme="a" data-role="header" data-add-back-btn="true">
+	<div id="pageSensortagConfig" data-role="page"  data-theme="b">
+		<div data-role="header" data-add-back-btn="true">
 			<h1>SensorTag Configuration</h1>
-			<a href="index.html" class="ui-btn ui-icon-home ui-btn-icon-right">Home</a>
+			<a href="index.html" class="ui-btn-right ui-icon-home ">Home</a>
 		</div>
 		<div data-role="content">
-			<div data-role="content" data-theme="b">
-			Use this page to configure your SensorTags to have names associated with unique ID's. <br />
-			You can also set the configuration institution and owner on the file<br />
+			<div data-role="content" data-theme="b" class='logo'>
+				<img src="ui/images/GrayLogoColour2.jpg">
+				Use this page to configure your SensorTags to have names associated with unique ID's.
+				You can also set the configuration institution and owner on the file
+			<br />
 			</div>
-			<div  data-role="collapsible" data-content-theme="c">
+			<div  data-role="collapsible" data-content-theme="a" class="asellList">
 			   <h3>Current Configuration File</h3>  
 				<p id='sensortagConfigFileData'>
 				</p>
-				<a onclick="viewSensorTagConfigFile()" data-role="button" data-mini="true"> Load latest file </a>
+				<a onclick="viewSensorTagConfigFile()" data-theme="b" data-role="button" data-mini="true"> Load latest file </a>
 			</div> 
  
 			<a href="#pageConfigData" data-role="button"  data-index="new"> Change Institution or Owner </a>
@@ -138,34 +151,35 @@
 		</div>
 	</div>
 
-	<div id="pageConfigData" data-role="page" >
+	<div id="pageConfigData" data-role="page"  data-theme="b">
 		<div data-role="header" data-add-back-btn="true">
 			<h1>Update SensorTag Configuration</h1>
-			<a href="index.html" class="ui-btn ui-icon-home ui-btn-icon-right">Home</a>
+			<a href="index.html" class="ui-btn-right ui-icon-home ">Home</a>
 		</div>
-		<div data-role="content">
-			<div data-role="content" data-theme="b">
-				Enter new Institution or Owner names below. <br />
-				To keep existing values, leave the field blank.
-			</div>
+		
+		<div data-role="main" class="ui-content">
+			<p class='logo' >
+				<img src="ui/images/GrayLogoColour2.jpg">
+				Enter new Institution or Owner names below. To keep existing values, leave the field blank. 
+			</p>
 
 			<form id="sensorTagConfigForm" >
 				<label for="institution"><strong>New Institution Name:</strong></label>
-				<input type="text" name="institution" id="institution" value=""  onfocus="inputFocus(this)" onblur="inputBlur(this)"/>
+				<input type="text" name="institution" id="institution" value="" />
 
 				<label for="owner"><strong>New Owner Name:</strong></label>
-				<input type="text" name="owner" id="owner" value=""  onfocus="inputFocus(this)" onblur="inputBlur(this)"/>
+				<input type="text" name="owner" id="owner" value="" />
 
 				<a href="#pageSensortagConfig" data-inline="true" data-icon="delete" data-theme="a" data-role="button" >Cancel</a>
-				<input type="button" data-inline="true" data-icon="check" data-theme="b" name="submit" id="institutionOwnerUpdateSubmit" value="Update" onclick="	updateInstitutionOwner()">
+				<input type="button" data-inline="true" data-icon="check" data-theme="b" name="submit" id="institutionOwnerUpdateSubmit" value="Update" onclick="updateInstitutionOwner()">
 			</form>
 		</div>
 	</div>
 
-	<div id="newConfigData" data-role="page" >
+	<div id="newConfigData" data-role="page" data-theme="b">
 		<div data-role="header" data-add-back-btn="true">
 			<h1>Update SensorTag Configuration</h1>
-			<a href="index.html" class="ui-btn ui-icon-home ui-btn-icon-right">Home</a>
+			<a href="index.html" class="ui-btn-right ui-icon-home ">Home</a>
 		</div>
 		<div data-role="content">
 			<div data-role="content" data-theme="b">
@@ -174,10 +188,10 @@
 
 			<form id="newSensorTagConfigForm" >
 				<label for="institution"><strong>New Institution Name:</strong></label>
-				<input type="text" name="institution" id="institution" value=""  onfocus="inputFocus(this)" onblur="inputBlur(this)"/>
+				<input type="text" name="institution" id="institution" value=""  />
 
 				<label for="owner"><strong>New Owner Name:</strong></label>
-				<input type="text" name="owner" id="owner" value=""  onfocus="inputFocus(this)" onblur="inputBlur(this)"/>
+				<input type="text" name="owner" id="owner" value="" />
 
 				<a href="#pageSensortagConfig" data-inline="true" data-icon="delete" data-theme="a" data-role="button" >Cancel</a>
 				<input type="button" data-inline="true" data-icon="check" data-theme="b" name="submit" id="institutionOwnerUpdateSubmit" value="Update" onclick="	newSensorTagConfigFile()">
@@ -185,25 +199,26 @@
 		</div>
 	</div>
 	
-	<div id="pageAddSensortags" data-role="page" >
+	<div id="pageAddSensortags" data-role="page" data-theme="b">
 		<div data-role="header" data-add-back-btn="true">
 			<h1>Add SensorTags to Config</h1>
-			<a href="index.html" class="ui-btn ui-icon-home ui-btn-icon-right">Home</a>
+			<a href="index.html" class="ui-btn-right ui-icon-home">Home</a>
 		</div>
 		<div data-role="content">
 			<div id="sensortagScanning" >
-			<div data-role="content" data-theme="b">
+			<div data-role="content" data-theme="b" class='logo'>
+				<img src="ui/images/GrayLogoColour2.jpg">
 				To add SensorTags to the configuration file: <br />
 				1. Start scanning for available SensorTags. <br />
 				2. Select the SensorTag to connect to. <br />
 				3. Press any key on the SensorTag to create or update the SensorTag name.
 			</div>
 
-			<button id="startScanButton" onclick="app.ui.onStartScanButton()" class="green" style="display:block" data-inline="true">
+			<button id="startScanButton" onclick="app.ui.onStartScanButton()" class="asellgreen" style="display:block" data-inline="true">
 				START SCANNING FOR SENSORTAGS
 			</button>
 
-			<button id="pauseScanButton" onclick="app.ui.onPauseScanButton()" class="charcoal" style="display:none" data-inline="true">
+			<button id="pauseScanButton" onclick="app.ui.onPauseScanButton()" class="asellorange" style="display:none" data-inline="true">
 				PAUSE SCANNNING
 			</button>
 
@@ -222,19 +237,21 @@
 		</div>
 	</div>
 
-	<div data-role="page" id="pageShareFiles">
+	<div data-role="page" id="pageShareFiles" data-theme="b">
 		<div data-role="header" data-add-back-btn="true">
 			<h1> Sharing Configuration Files </h1> 
-			<a href="index.html" class="ui-btn ui-icon-home ui-btn-icon-right">Home</a>
+			<a href="index.html" class="ui-btn-right ui-icon-home">Home</a>
 		</div>
 		
 		<div data-role="main" class="ui-content">
-			<h1>Select the file to share</h1>
+			<h1 class='logo'>Select the file to share
+				<img src="ui/images/GrayLogoColour2.jpg">
+			</h1>
 			<div> 
 			 Selecting a file allows you to email the selected file.  
 			</div>
 			
-			<div  data-role="collapsible" data-content-theme="c">
+			<div  data-role="collapsible" data-content-theme="c" class="asellList">
 			   <h3>Choose a data file to share</h3>
 				<ul id="configFileList" data-role="listview" data-inset="true">
 				</ul>
@@ -243,16 +260,19 @@
 
  		</div>  
 	</div> 
+ 
 
-
-	<div id="pageServerDetails" data-role="page" >
-		<div data-role="header" data-add-back-btn="true"><h1>Settings</h1>
-			<a href="index.html" data-icon="home" class="ui-btn-right">Home</a>
+	<div id="pageServerDetails" data-role="page" data-theme="b" >
+		<div data-role="header" data-add-back-btn="true">
+			<h1>Server Details</h1>
+			<a href="index.html" data-icon="home" class="ui-btn-right ui-icon-home">Home</a>
 		</div>
 		<div data-role="content">
 			<script> //updateStatus() </script>
 
-			<h1>Local Server Details</h1>
+			<h1  class='logo'>Local Server Details
+				<img src="ui/images/GrayLogoColour2.jpg">
+			</h1>
 			<div id='url'>Address </div>
 			<div id='localpath'></div>
 			<div id='location'></div>

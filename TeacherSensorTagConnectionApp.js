@@ -157,14 +157,14 @@ app.ui.displayDeviceList = function()
 				//+	device.rssi + '<br />'
 				//+ 	'<div style="background:rgb(225,0,0);height:20px;width:'
 				//+ 		rssiWidth + '%;"></div>'
-				+	'<button id="' + device.address +'Connect" data-inline="true" onclick="app.sensortag.connect(\'' +  device.address + '\', app.sensortag.addToConfig)" class="green"> <strong>' + device.name + '</strong> </button>' 
-				+ '<button id="' + device.address +'Disconnect" data-inline="true" onclick="app.sensortag.disconnect(\'' +  device.address + '\')" class="red" style="display:none"> <strong> Disconnect </strong> </button>'
+				+	'<button id="' + device.address +'Connect" data-inline="true" onclick="app.sensortag.connect(\'' +  device.address + '\', app.sensortag.addToConfig)" class="asellbrightgreen"> <strong> press to connect to ' + device.name + '</strong> </button>' 
+				+ '<button id="' + device.address +'Disconnect" data-inline="true" onclick="app.sensortag.disconnect(\'' +  device.address + '\')" class="asellred" style="display:none"> <strong> Disconnect </strong> </button>'
 				+ 	'<div style="background:rgb(225,0,0);height:20px;width:'
 				+ 		rssiWidth + '%;"></div>'
 				+ '</br>'
 			);
 			$('#found-devices').append(element);
-			console.log("DEBUG - Found and element with " + device.address)
+			console.log("DEBUG - Found element with " + device.address)
 		} 
 	});
 };

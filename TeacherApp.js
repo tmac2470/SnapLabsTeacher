@@ -254,7 +254,7 @@ function listConfigFilesResults(entries, viewID) {
   entries.forEach(function(entry, i) {
     //var li = document.createElement('li');
     //li.innerHTML = ['<a class=" ui-icon-grid" onclick="loadExpConfig()">', entry.name, '</a>'].join('');
-	var li = "<li><a onclick='socialShareFile(\"" + entry.fullPath +"\")'> " + entry.name + "</a> </li>"
+	var li = "<li><a class='ui-btn ui-btn-icon-right ui-icon-carat-r' onclick='socialShareFile(\"" + entry.fullPath +"\")'> " + entry.name + "</a> </li>"
     document.getElementById(viewID).innerHTML += li;
   }); 
 }
@@ -282,8 +282,8 @@ var socialShareFile = function(fileShare) {
 	window.plugins.socialsharing.shareViaEmail(
 		'Please find attached the configuration file for Teacher App', // can contain HTML tags, but support on Android is rather limited:  http://stackoverflow.com/questions/15136480/how-to-send-html-content-with-image-through-android-default-email-client
 		'Configuration File from Teacher App',
-		['taniaNerld@gmail.com'], // TO: must be null or an array
-		['taniamachet@gmail.com'], // CC: must be null or an array
+		null, // TO: must be null or an array
+		null, // CC: must be null or an array
 		null, // BCC: must be null or an array
 		[fileName], // FILES: can be null, a string, or an array
 		onSuccess, // called when sharing worked, but also when the user cancelled sharing via email. On iOS, the callbacks' boolean result parameter is true when sharing worked, false if cancelled. On Android, this parameter is always true so it can't be used). See section "Notes about the successCallback" below.
@@ -361,7 +361,7 @@ function showSensorTagConfigFile(fileData) {
 	
 	var sensorData = fileData.sensortagMapping;
 	var fileOutput = document.getElementById('sensortagConfigFileData');
-	fileOutput.innerHTML = "<h1>Current SensorTag Configuration Information:</h1>"; 
+	fileOutput.innerHTML = "<h2>Current SensorTag Configuration Information:</h2>"; 
 	fileOutput.innerHTML += "<b>Institution: </b>" + sensorData.institution + "<br />"; 
 	fileOutput.innerHTML += "<b>Owner: </b>" + sensorData.owner + "<br /><br />"; 
 	for(sensor in sensorData.sensortags){
@@ -433,6 +433,8 @@ function updateInstitutionOwner()
 	newMetadata.owner = dataObjTemp.owner
 	
 	readSensorTagConfigFile(updateSensorTagConfigFileMetadata, newMetadata);
+	
+	alert("SensorTag Mapping file updated")
 }
 
 
@@ -451,7 +453,7 @@ function updateSensorTagConfigFileMetadata(sensorData, newData) {
 		sensorData.sensortagMapping.owner = newData.owner; 
 	}
     writeTextToFile(sensorFile, JSON.stringify(sensorData), false);
-	hideElementView("institutionOwnerUpdate");
+	//hideElementView("institutionOwnerUpdate");
 }
 
 /*
