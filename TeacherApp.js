@@ -353,6 +353,7 @@ function newSensorTagConfigFile() {
 	data.sensortagMapping.sensortags = {};
 	console.log("DEBUG - new file string is:" + JSON.stringify(data))
     writeTextToFile(sensorFile, JSON.stringify(data), false);
+	return true;
 }
 /*
  * Show the SensorTag Configuration file view
@@ -561,7 +562,7 @@ getConfigFileName = function(json)
 		onPromptFileName,     // callback to invoke
 		'Configuration File Name ', // title
 		['Ok','Exit'],             // buttonLabels
-		'expConfig.jsonp'                 // defaultText
+		'expConfig.json'                 // defaultText
 	);
 }
 
@@ -643,14 +644,24 @@ buildSensortagConfigHTML = function(id)
 			tempString += "</div>"
 		tempString += "</fieldset>"
 		
-		// Label for the temperature data
+		// Label for the  data 
 		tempString += "<div id='"+ sensors[i] + id + "label' style='display:none' >" 
 			tempString += "<label for='sensorTags[" +id +"][sensors][" + sensors[i] + "][label]'>"  + sensors[i] + " Data Label:</label>"
 			tempString += "<input type='text' name='sensorTags[" +id +"][sensors][" + sensors[i] + "][label]' value='' placeholder='"+ sensors[i] + " Label'/>"
 		tempString += "</div>"
 			
-		// Labels for the temperature graph
+		// Labels for the graph, and graph type 
 		tempString += "<div id='"+ sensors[i] + id + "labelGraph' style='display:none' >" 
+			// Graph Type
+			tempString += "<div class='ui-field-contain'>"
+			tempString += 	"<label for='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphType]'>Graph Type:</label>"
+			tempString += 	"<select name='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphType]'>"
+			tempString +=  		"<option value='spline'>Smoothed Line Graph</option>"
+			tempString +=  		"<option value='line'>Line Graph</option>"
+			tempString +=  		"<option value='scatter'>Scatter Graph</option>"
+			tempString +=  		"<option value='area'>Area Graph</option>"
+			tempString += 	"</select>"
+			tempString += "</div>"
 			// Graph Title
 			tempString += "<label for='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphTitle]'>"  + sensors[i] + " Graph Title:</label>"
 			tempString += "<input type='text' name='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphTitle]' value='' placeholder='"+ sensors[i] + " Graph Label'/>"
@@ -660,7 +671,7 @@ buildSensortagConfigHTML = function(id)
 			// Graph y-axis
 			tempString += "<label for='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphYAxis]'>"  + sensors[i] + " Y Axis Title:</label>"
 			tempString += "<input type='text' name='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphYAxis]' value='' placeholder='"+ sensors[i] + " Graph Y Axis Label'/>"
-		tempString += "</div>"
+			tempString += "</div>"
 		
 		
 		config.innerHTML += tempString
@@ -711,7 +722,7 @@ showHideLabel = function(labelID)
 dumpLocalFile = function() 
 {
     $.ajax({
-      url: 'http://10.17.43.1:8080/this.test',
+      url: 'http://10.17.43.1:8080/this.test', 
       dataType: 'json',
       async: false,
       success: function(response){

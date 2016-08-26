@@ -223,6 +223,7 @@ app.sensortag.disconnect = function(address)
 	sensortag.disconnectDevice()
 	app.sensortag.displayValue(address+'Connect', "Added to configuration: " + address)
 	hideElementView(address+'Disconnect')
+	hideElementView('deviceInfo')
 }
 
 app.sensortag.statusHandler = function(status)
@@ -230,6 +231,7 @@ app.sensortag.statusHandler = function(status)
 	if ('DEVICE_INFO_AVAILABLE' === status)
 	{
 		// Show device model and firmware version.
+		showElementView('deviceInfo')
 		app.sensortag.displayValue('DeviceModel', sensortag.getDeviceModel())
 		app.sensortag.displayValue('FirmwareData', sensortag.getFirmwareString())
 		app.sensortag.displayValue('SystemID', sensortag.getSystemID())

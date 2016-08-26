@@ -22,7 +22,7 @@
 	<script>
 	//<link rel="stylesheet" href="https://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
 	</script>
-	
+	 
 	<script>
 	// Redirect console.log to Evothings Workbench.
 		if (window.hyper && window.hyper.log) { console.log = hyper.log }
@@ -178,7 +178,7 @@
 
 	<div id="newConfigData" data-role="page" data-theme="b">
 		<div data-role="header" data-add-back-btn="true">
-			<h1>Update SensorTag Configuration</h1>
+			<h1>Update SensorTag Configuration</h1> 
 			<a href="index.html" class="ui-btn-right ui-icon-home ">Home</a>
 		</div>
 		<div data-role="content">
@@ -194,7 +194,8 @@
 				<input type="text" name="owner" id="owner" value="" />
 
 				<a href="#pageSensortagConfig" data-inline="true" data-icon="delete" data-theme="a" data-role="button" >Cancel</a>
-				<input type="button" data-inline="true" data-icon="check" data-theme="b" name="submit" id="institutionOwnerUpdateSubmit" value="Update" onclick="	newSensorTagConfigFile()">
+				<input type="button" data-inline="true" data-icon="check" data-theme="b" name="submit" id="institutionOwnerUpdateSubmit" value="Update" onclick="newSensorTagConfigFile()">
+				<a href="#pageAddSensortags" data-inline="true" data-icon="arrow-r" data-theme="a" data-role="button" onclick="newSensorTagConfigFile()">Continue with configuration</a>
 			</form>
 		</div>
 	</div>
@@ -223,7 +224,7 @@
 			</button>
 
 			<p><strong>Scan Status: </strong><span id="scan-status">Scanning Paused</span></p>
-			<p><strong>SensorTag Connection Status: </strong> <span id="StatusData">Press "Start Ssanning For SensorTags" to look for SensorTags</span></p>
+			<p><strong>SensorTag Connection Status: </strong> <span id="StatusData">Press "Start Scanning For SensorTags" to look for SensorTags</span></p>
 			<div id="deviceInfo" style="display:none">
 				<p><strong> <span id="KeypressData">Press any key to on the SensorTag to add it to the configuration file</strong> </span> </p>
 				<p>
