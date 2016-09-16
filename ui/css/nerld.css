@@ -63,7 +63,6 @@ text-align:center;
 }
 
 
-
 /*  ----------------------------------------------------------
 								SECTIONS
 	---------------------------------------------------------- */
@@ -96,6 +95,61 @@ body h1#labTitle {
 	font-size:80%;
  }
 	
+.graphdiv{
+	background-color:white!important;
+}	
+
+.border-grid{
+    border-top: solid 1px #FF903D;
+    border-left: solid 1px #FF903D;
+    border-right: solid 1px #FF903D;
+    border-bottom: solid 1px #FF903D;
+	height: 70px;
+}
+
+
+/*  ----------------------------------------------------------
+								DRAG AND DROP
+	---------------------------------------------------------- */
+
+.draggable {
+	width:100px;
+	height:75px;
+	position:absolute
+}
+
+#canvaspanel{ 
+	margin-left: 2%;
+	width:95%;
+	height:250px;
+	background-color:#2EA89F;
+    border-top: solid 5px #FF903D;
+    border-left: solid 5px #FF903D;
+    border-right: solid 5px #FF903D;
+    border-bottom: solid 5px #FF903D;
+}
+
+.widgetitem{
+	/* To correctly align image, regardless of content height: */
+    vertical-align: top;
+    display: inline-block;
+    /* To horizontally center images and caption */
+    text-align: center;
+    /* The width of the container also implies margin around the images. */
+    width: 80px;
+
+}
+
+.widgetimage{
+	height: 40px;
+	width: 40px;
+	
+}
+
+.widgetcaption{
+	display: block;
+}
+
 /*  ----------------------------------------------------------
 								BUTTONS
 	---------------------------------------------------------- */
@@ -118,9 +172,16 @@ button.sensorGraphButton{
 	float: right;
 } 
 
-#initDataStorage{
+#startVideo{
+	width: 95%;
+	margin-left: 2.5%;
+	
+}
+
+#initDataStorage {
 	width: 100%;
 }
+
 /*  ----------------------------------------------------------
 								BUTTONS
 	---------------------------------------------------------- */
@@ -224,9 +285,9 @@ input.btn-group + label.big {
 .color_wavegreen { color: #2EA89F; }
 .bg_asellgreen, input.asellgreen, button.asellgreen, ul.asellgreen li, label.asellgreen,
 input.asellgreen + label {
-	background-color: #2EA89F!important;
-	color: black!important;
-	font-weight: bold!important;
+	background-color: #2EA89F;
+	color: black;
+	font-weight: bold;
 }
 /* Downpressed button. */
 button.asellgreen:active, button.asellgreen.pressed,
@@ -238,12 +299,11 @@ input.btn-group.asellgreen:checked + label {
 	background-color: #3aca9c;
 }
 
-
-/*  Color: "Asell Bright Green"
+/*  Color: "Asell Green"
 	Class name: asellbrightgreen
     ------------------ */
 .color_wavebrightgreen { color: #3CFB7A; }
-.bg_asellbrightgreen, input.asellbrightgreen, button.asellbrightgreen, ul.asellbrightgreen li, label.asellbrightgreen,
+.bg_asellbrightgreen, input.asellbrightgreen, button.asellbrightgreen, ul.asellbrightgreen li, label.asellbrightgreen, a.asellbrightgreen,
 input.asellbrightgreen + label {
 	background-color: #3CFB7A!important;
 	color: black!important;
@@ -265,8 +325,8 @@ input.btn-group.asellbrightgreen:checked + label {
 .color_asellred { color: #C23D45; }
 .bg_asellred, input.asellred, button.asellred, ul.asellred li, label.asellred,
 input.asellred + label {
-	background-color: #C23D45!important;
-	font-weight: bold!important;
+	background-color: #C23D45;
+	font-weight: bold;
 }
 /* Downpressed button. */
 button.asellred:active, button.asellred.pressed,
@@ -275,7 +335,7 @@ input.btn-group:active + label.asellred,
 input.btn-group.asellred:active + label,
 input.btn-group:checked + label.asellred,
 input.btn-group.asellred:checked + label {
-	background-color: #cb414b!important;
+	background-color: #cb414b;
 }
 
 /*  Color: "Asell Orange"
@@ -284,8 +344,8 @@ input.btn-group.asellred:checked + label {
 .color_asellorange { color: #FF903D; }
 .bg_asellorange, input.asellorange, button.asellorange, ul.asellorange li, label.asellorange,
 input.asellorange + label {
-	background-color: #FF903D!important;
-	font-weight: bold!important;
+	background-color: #FF903D;
+	font-weight: bold;
 }
 /* Downpressed button. */
 button.asellorange:active, button.asellorange.pressed,
@@ -294,7 +354,7 @@ input.btn-group:active + label.asellorange,
 input.btn-group.asellorange:active + label,
 input.btn-group:checked + label.asellorange,
 input.btn-group.asellorange:checked + label {
-	background-color: #cb414b!important;
+	background-color: #cb414b;
 }
 
 /*  ----------------------------------------------------------

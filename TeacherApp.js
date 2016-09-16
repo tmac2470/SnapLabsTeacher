@@ -581,17 +581,16 @@ onPromptFileName = function(results) {
 	}else{
 		alert("No file saved");
 	}
-		
-	
 }
  
+
 /*
  * submitExperimentConfig 
- * Display SensorTag Config informaion for each sensortag depending on user selection
+ * Submit the information from the form to the config file to save
  */
 submitExperimentConfig = function() 
 {
-	var openingStr = "callback({\n\"experimentConfig\": \n";
+	var openingStr = "callback({\n\"experimentConfig\": \n"; 
 	var closingString = "}} )";
 	var openingStrJson = "{\n\"experimentConfig\": \n";
 	var closingStringJson = "} ";
@@ -608,7 +607,103 @@ submitExperimentConfig = function()
 		writeTextToFileAndCopy(tempFile, openingStrJson + JSON.stringify(dataObj) + closingStringJson, isAppend, tempFileName, expConfigFileName ); 
 	}
 }
+
+/*
+ * quickDesignConfiguration 
+ * Submit information from form, validate and fill out missing information and save
+ */
  
+quickDesignConfiguration = function(){
+	var sensorList = ['Temperature','Humidity','Barometer','Accelerometer','Gyroscope','Magnetometer','Luxometer'];
+	var dataObjTemp = $('#quickDesignForm').serializeJSON();
+	console.log("DEBUG - Form for quick design is: " + JSON.stringify(dataObjTemp) )
+	var newDataObj = dataObjTemp
+
+
+	// Check if the field exists in the formObject, if not create it and set to default value
+	newDataObj.labTitle = dataObjTemp.labTitle || "Investigation"
+	var fileName = newDataObj.labTitle.replace(/ /g,'')
+	console.log("DEBUG - file name is: " + fileName  + ", before replaced is " +newDataObj.labTitle)
+
+	newDataObj.dataStorageAllowed = dataObjTemp.dataStorageAllowed || "on"
+	newDataObj.dataStoragePrefix = dataObjTemp.dataStoragePrefix || fileName
+	newDataObj.videoPrefix = dataObjTemp.labTitle || fileName
+	newDataObj.graphAutoStart = dataObjTemp.graphAutoStart || "off"
+
+	for (var i=0; i<2; i++)
+	{
+		newDataObj.sensorTags[i] = dataObjTemp.sensorTags[i] || {};
+		newDataObj.sensorTags[i].connect = dataObjTemp.sensorTags[i].connect || "off"
+		newDataObj.sensorTags[i].title = dataObjTemp.sensorTags[i].title || "SensorTag"
+		newDataObj.sensorTags[i].sensors = dataObjTemp.sensorTags[i].sensors || {}
+		for(var j=0 ;j<sensorList.length;j++){
+			var sensorName = sensorList[j]
+			newDataObj.sensorTags[i].sensors[sensorName] = dataObjTemp.sensorTags[i].sensors[sensorName] || {}
+			newDataObj.sensorTags[i].sensors[sensorName].display = dataObjTemp.sensorTags[i].sensors[sensorName].display || "off"
+			newDataObj.sensorTags[i].sensors[sensorName].label = dataObjTemp.sensorTags[i].sensors[sensorName].label || sensorName
+			newDataObj.sensorTags[i].sensors[sensorName].graphType = dataObjTemp.sensorTags[i].sensors[sensorName].graphType || "spline"
+			newDataObj.sensorTags[i].sensors[sensorName].graphTitle = dataObjTemp.sensorTags[i].sensors[sensorName].graphTitle || sensorName + " Graph"
+			newDataObj.sensorTags[i].sensors[sensorName].graphXAxis = dataObjTemp.sensorTags[i].sensors[sensorName].graphXAxis || "Time (s)"
+			newDataObj.sensorTags[i].sensors[sensorName].graphYAxis = dataObjTemp.sensorTags[i].sensors[sensorName].graphYAxis || sensorName
+			newDataObj.sensorTags[i].sensors[sensorName].captureOnClick = dataObjTemp.sensorTags[i].sensors[sensorName].captureOnClick || "off"
+			newDataObj.sensorTags[i].sensors[sensorName].grid = dataObjTemp.sensorTags[i].sensors[sensorName].grid || {}
+			newDataObj.sensorTags[i].sensors[sensorName].grid.griddisplay = dataObjTemp.sensorTags[i].sensors[sensorName].grid.griddisplay || "off"
+			newDataObj.sensorTags[i].sensors[sensorName].grid.columns = dataObjTemp.sensorTags[i].sensors[sensorName].grid.columns || "4"
+			newDataObj.sensorTags[i].sensors[sensorName].grid.rows = dataObjTemp.sensorTags[i].sensors[sensorName].grid.rows || "4"
+			
+			switch (sensorName)
+			{
+				case "Temperature":
+					newDataObj.sensorTags[i].sensors[sensorName].parameters = dataObjTemp.sensorTags[i].sensors[sensorName].parameters || {}
+					newDataObj.sensorTags[i].sensors[sensorName].parameters.ambient = dataObjTemp.sensorTags[i].sensors[sensorName].parameters.ambient || "on"
+					newDataObj.sensorTags[i].sensors[sensorName].parameters.IR = dataObjTemp.sensorTags[i].sensors[sensorName].parameters.IR || "on"
+					columnClass = "ui-grid-a"
+					break;
+			}
+		}
+	}
+
+
+	alert("Your configuration file has been saved to: " + fileName+".json" + ".\n\n Please make a note of this name.");
+	
+	submitQuickExperimentConfig(newDataObj, fileName+".json")
+	//console.log("DEBUG - After manipulation oject is: " + JSON.stringify(newDataObj) )
+}
+
+/*
+ * submitQuickExperimentConfig 
+ * Submit the information from the form to the config file to save
+ */
+submitQuickExperimentConfig = function(dataObj, fileName) 
+{
+	var openingStr = "callback({\n\"experimentConfig\": \n"; 
+	var closingString = "}} )";
+	var openingStrJson = "{\n\"experimentConfig\": \n";
+	var closingStringJson = "} ";
+
+	console.log("DEBUG - written String is: " + openingStrJson + JSON.stringify(dataObj) + closingStringJson )
+	
+	var isAppend = false;
+	//Write data to the the temporary file and then copy to new file
+	if (jsonFormat === "jsonp"){
+		writeTextToFileAndCopy(tempFile, openingStr + JSON.stringify(dataObj) + closingString,isAppend, tempFileName, fileName ); 
+	}
+	else{
+		writeTextToFileAndCopy(tempFile, openingStrJson + JSON.stringify(dataObj) + closingStringJson, isAppend, tempFileName, fileName ); 
+	}
+}
+ 
+resetQuickDesign = function()
+{
+	$('.widgetItem','#canvaspanel').each(function() {
+		var itemid = $(this).attr("itemid");
+		var sensor = itemid.split("_");
+ 
+		$(this).appendTo("#"+sensor[0]+"_Selection");
+
+		//console.log("DEBUG - looping through widgets. Item id is " + itemid)
+	});
+}
 /*
  * buildSensortagConfigHTML 
  * Display SensorTag Config information for each sensortag build using html strings for each sensor and tag
@@ -624,64 +719,110 @@ buildSensortagConfigHTML = function(id)
 	config.innerHTML +=	"<div data-role='fieldcontain'><label for='addSensortag" +id +"'><strong>Display SensorTag</strong></label><input type='checkbox' data-role='flipswitch' name='sensorTags["+id+"][connect]' id='addSensortag"+id+"'></div>"
 	config.innerHTML += "<label for='sensorTags[" +id +"][title]'><strong>Name of SensorTag:</strong></label><input type='text' name='sensorTags[" +id +"][title]' id='sensorTags" +id +"Name' value='Sensortag " + id +"' onfocus='inputFocus(this)' onblur='inputBlur(this)'/>" 
 
-
+	
 	//onchange='showHideSensortagConfig("+id+")'></div>"
 
 	for(var i=0 ;i<sensors.length;i++){ 
 		// Changed to using a temporary string to make this more readable
 		var tempString = ""
-		// Side by side flip switches
-		tempString += "<fieldset class='ui-grid-a'>"
+		tempString += "<p><strong>" + sensors[i] + "</strong></p>"
+
+		// Additonal parameters depending on sensor
+		switch(sensors[i]){
+			case "Temperature":
+				// Temperature sensor can choose to display ambient and/or IR temp
+				tempString += "<fieldset class='ui-grid-a'>"
+				tempString += 	"<div class='ui-block-a'>"
+				// Flip switch for IR Temperature
+				tempString += 		"<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[parameters}[IR]'>Infrared or object temperature:</label>"
+				tempString += 		"<input  class='sensortag"+id+"' type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors][" + sensors[i] + "][parameters][IR]' id='" + sensors[i] + id +"TempIRflip'>"
+				tempString += 	"</div>"
+				tempString += 	"<div class='ui-block-b'>"
+				// Flip switch for ambient Temperature diplay
+				tempString += 		"<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[parameters}[ambient]'>Ambient temperature:</label>"
+				tempString += 		"<input  class='sensortag"+id+"' type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors][" + sensors[i] + "][parameters][ambient]' id='" + sensors[i] + id +"TempAmbientflip'>"
+				tempString += 	"</div>"
+				tempString += "</fieldset>"
+				break;
+		}
+
+		// Side by side flip switches for display and data options
+		// Common to all sensors
+		tempString += "<fieldset class='ui-grid-c'>"
 			tempString += "<div class='ui-block-a'>"
 				// Flip switch for data display
-				tempString += "<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[display]'>" + sensors[i] + " Data:</label>"
+				tempString += "<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[display]'>Data:</label>"
 				tempString += "<input  class='sensortag"+id+"' type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors][" + sensors[i] + "][display]' id='" + sensors[i] + id +"flip' onchange='showHideLabel(\"" + sensors[i] + id + "label\")'>"
 			tempString += "</div>"
 			tempString += "<div class='ui-block-b'>"
 				// Flip switch for graph diplay
-				tempString += "<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[graph]'>" + sensors[i] + " Graph:</label>"
+				tempString += "<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[graph]'>Graph:</label>"
 				tempString += "<input  class='sensortag"+id+"' type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors][" + sensors[i] + "][graph]' id='" + sensors[i] + id +"flipGraph' style='display:none' onchange='showHideLabel(\"" + sensors[i] + id + "labelGraph\")'> "
+			tempString += "</div>"
+			tempString += "<div class='ui-block-c'>" 
+				// Flip switch for grid diplay
+				tempString += "<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[grid][griddisplay]'> Grid:</label>"
+				tempString += "<input  class='sensortag"+id+"' type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors][" + sensors[i] + "][grid][griddisplay]' id='" + sensors[i] + id +"flipGrid' style='display:none' onchange='showHideLabel(\"" + sensors[i] + id + "GridConfig\")'> "
+			tempString += "</div>"
+			tempString += "<div class='ui-block-d'>" 
+				// Flip switch for graph diplay
+				tempString += "<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[captureOnClick]'> Capture on Click:</label>"
+				tempString += "<input  class='sensortag"+id+"' type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors][" + sensors[i] + "][captureOnClick]' id='" + sensors[i] + id +"flipCaptureOnClick' style='display:none'> "
 			tempString += "</div>"
 		tempString += "</fieldset>"
 		
+
+
 		// Label for the  data 
 		tempString += "<div id='"+ sensors[i] + id + "label' style='display:none' >" 
 			tempString += "<label for='sensorTags[" +id +"][sensors][" + sensors[i] + "][label]'>"  + sensors[i] + " Data Label:</label>"
 			tempString += "<input type='text' name='sensorTags[" +id +"][sensors][" + sensors[i] + "][label]' value='' placeholder='"+ sensors[i] + " Label'/>"
 		tempString += "</div>"
 			
-		// Labels for the graph, and graph type 
+		// Labels for the graph, graph type 
 		tempString += "<div id='"+ sensors[i] + id + "labelGraph' style='display:none' >" 
-			// Graph Type
-			tempString += "<div class='ui-field-contain'>"
-			tempString += 	"<label for='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphType]'>Graph Type:</label>"
-			tempString += 	"<select name='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphType]'>"
-			tempString +=  		"<option value='spline'>Smoothed Line Graph</option>"
-			tempString +=  		"<option value='line'>Line Graph</option>"
-			tempString +=  		"<option value='scatter'>Scatter Graph</option>"
-			tempString +=  		"<option value='area'>Area Graph</option>"
-			tempString += 	"</select>"
-			tempString += "</div>"
-			// Graph Title
-			tempString += "<label for='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphTitle]'>"  + sensors[i] + " Graph Title:</label>"
-			tempString += "<input type='text' name='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphTitle]' value='' placeholder='"+ sensors[i] + " Graph Label'/>"
-			// Graph x-axis
-			tempString += "<label for='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphXAxis]'>"  + sensors[i] + " X Axis Title:</label>"
-			tempString += "<input type='text' name='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphXAxis]' value='' placeholder='"+ sensors[i] + " Graph X Axis Label'/>"
-			// Graph y-axis
-			tempString += "<label for='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphYAxis]'>"  + sensors[i] + " Y Axis Title:</label>"
-			tempString += "<input type='text' name='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphYAxis]' value='' placeholder='"+ sensors[i] + " Graph Y Axis Label'/>"
-			tempString += "</div>"
-		
+		// Graph Type
+		tempString += "<div class='ui-field-contain'>"
+		tempString += 	"<label for='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphType]'>Graph Type:</label>"
+		tempString += 	"<select name='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphType]'>"
+		tempString +=  		"<option value='spline'>Smoothed Line Graph</option>"
+		tempString +=  		"<option value='line'>Line Graph</option>"
+		tempString +=  		"<option value='scatter'>Scatter Graph</option>"
+		tempString +=  		"<option value='area'>Area Graph</option>"
+		tempString += 	"</select>"
+		tempString += "</div>"
+		// Graph Title
+		tempString += "<label for='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphTitle]'>"  + sensors[i] + " Graph Title:</label>"
+		tempString += "<input type='text' name='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphTitle]' value='' placeholder='"+ sensors[i] + " Graph Label'/>"
+		// Graph x-axis
+		tempString += "<label for='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphXAxis]'>"  + sensors[i] + " X Axis Title:</label>"
+		tempString += "<input type='text' name='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphXAxis]' value='' placeholder='"+ sensors[i] + " Graph X Axis Label'/>"
+		// Graph y-axis
+		tempString += "<label for='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphYAxis]'>"  + sensors[i] + " Y Axis Title:</label>"
+		tempString += "<input type='text' name='sensorTags[" +id +"][sensors][" + sensors[i] + "][graphYAxis]' value='' placeholder='"+ sensors[i] + " Graph Y Axis Label'/>"
+		tempString += "</div>"
+
+		//Configuration for the grid
+		tempString += "<div id='"+ sensors[i] + id + "GridConfig' style='display:none' >" 
+		tempString += 	"<div class='ui-field-contain'>"
+		tempString += 		"<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[grid][columns]'>Columns:</label>"
+		tempString += 			"<select name='sensorTags[" + id + "][sensors][" + sensors[i] + "[grid][columns]'>"
+		for(var j=2 ;j<6;j++){ 
+			tempString +=		"<option value='" +j +"'>" +j +"</option>"
+		}
+		tempString += 		"</select>"
+		tempString += 	"</div>"
+		tempString += 	"<div class='ui-field-contain'>"
+		tempString += 		"<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[grid][rows]'>Rows:</label>"
+		tempString += 			"<select name='sensorTags[" + id + "][sensors][" + sensors[i] + "[grid][rows]'>"
+		for(var k=1 ;k<11;k++){ 
+			tempString +=		"<option value='" +k +"'>" +k +"</option>"
+		}
+		tempString += 		"</select>"
+		tempString += "</div>"
+			
 		
 		config.innerHTML += tempString
-		//config.innerHTML += "<fieldset class='ui-grid-a'>     <div class='ui-block-a'>     <div  data-role='fieldcontain' ><label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[display]'>" + sensors[i] + " Data:</label><input  class='sensortag"+id+"' type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors][" + sensors[i] + "][display]' id='" + sensors[i] + id +"flip' onchange='showElementView(\"" + sensors[i] + id + "label\")'>        </div>         </div>     <div class='ui-block-b'><div data-role='fieldcontain' ><label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[graph]'>" + sensors[i] + " Graph:</label><input  class='sensortag"+id+"' type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors][" + sensors[i] + "][graph]' id='" + sensors[i] + id +"flipGraph' style='display:none' onchange='showElementView(\"" + sensors[i] + id + "label\")'> </div> </div> </fieldset class>" 
-		// Fields for each sensor:  field with flip switch to allow sensor graphing 
-		//config.innerHTML += "<div class='ui-block-b'><div data-role='fieldcontain' ><label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[graph]'>" + sensors[i] + " Graph:</label><input  class='sensortag"+id+"' type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors][" + sensors[i] + "][graph]' id='" + sensors[i] + id +"flipGraph' style='display:none' onchange='showElementView(\"" + sensors[i] + id + "label\")'> </div> </div> </fieldset class>" 		
-
-		// Fields for each sensor: hidden field to name sensor 
-		//config.innerHTML += "<div data-role='fieldcontain' id='"+ sensors[i] + id + "label' style='display:none' class='ui-hide-label' ><label for='sensorTags[" +id +"][sensors][" + sensors[i] + "][label]'> " + sensors[i] + " Label:</label><input type='text' name='sensorTags[" +id +"][sensors][" + sensors[i] + "][label]' value='' placeholder='"+ sensors[i] + " Label'/></div>"
-
 	}
 }
 
@@ -703,6 +844,61 @@ showHideSensortagConfig = function(id)
 		document.getElementById("addSensortag" +id + "Switch").innerHTML = 'Add SensorTag' //Evothings red
 	}
 } 
+
+ 
+/*
+ * createWidgets to create the list of available widgets for experiment design
+ */
+createWidgets = function()
+{
+	var sensors = ['Temperature','Humidity','Barometer','Accelerometer','Gyroscope','Magnetometer','Luxometer'];
+	var widgetList = document.getElementById('widgetset');
+
+	// Clear form
+	widgetList.innerHTML = "";
+
+	var collapsibleString = ""
+	
+	// set up the widgets for the form along with the hidden details they need
+	for(var i=0 ;i<sensors.length;i++) 
+	{ 
+		collapsibleString += "<div data-role='collapsible' class='selectionpanel'>"
+		collapsibleString += 	"<h3>" + sensors[i] + " Widgets</h3>"
+		collapsibleString +=	"<div id='" + sensors[i] + "_Selection'>"
+		collapsibleString +=  		"<div itemid='" +sensors[i] +"_Graph' class='ui-btn ui-btn-inline ui-widget widgetItem ui-widget-content' revert='true' style='position: relative;'>" 
+		collapsibleString +=			"<img src='ui/images/graphicon.png' alt='graph' class='widgetimage'><span class='widgetcaption'>" + sensors[i] + "</span><span class='widgetcaption'> Graph </span>"
+										// Set SensorTag 0 to display
+		collapsibleString +=			"<input type='hidden' value='on' name='sensorTags[0][connect]'>"
+										// Set Sensor on Tag 0 to display
+		collapsibleString +=			"<input type='hidden' value='on' name='sensorTags[0][sensors][" + sensors[i] + "][display]'>"
+										// Set Graph for Sensor on Tag 0 to display
+		collapsibleString +=			"<input type='hidden' value='on' name='sensorTags[0][sensors][" + sensors[i] + "][graph]'>"
+		collapsibleString +=		"</div> " 
+		collapsibleString +=		"<div itemid='" +  sensors[i] + "_Data' class='ui-btn ui-btn-inline ui-widget widgetItem ui-widget-content' style='position: relative;'>"
+		collapsibleString +=			"<img src='ui/images/dataicon.jpg' alt='data' class='widgetimage'><span class='widgetcaption'>" + sensors[i]+ "</span><span class='widgetcaption'> Data Only </span>" 
+										// Set SensorTag 0 to display
+		collapsibleString +=			"<input type='hidden' value='on' name='sensorTags[0][connect]'>"
+										// Set Sensor on Tag 0 to display
+		collapsibleString +=			"<input type='hidden' value='on' name='sensorTags[0][sensors][" + sensors[i] + "][display]'>"
+		collapsibleString +=		"</div> " 
+		collapsibleString +=		"<div itemid='" +  sensors[i] + "_Grid' class='ui-btn ui-btn-inline ui-widget widgetItem ui-widget-content' revert='true' style='position: relative;'>"
+		collapsibleString +=			"<img src='ui/images/gridicon.png' alt='grid' class='widgetimage'><span class='widgetcaption'> 4x4 " + sensors[i]+ "</span><span class='widgetcaption'> Grid </span>" 
+										// Set SensorTag 0 to display
+		collapsibleString +=			"<input type='hidden' value='on' name='sensorTags[0][connect]'>"
+										// Set Sensor on Tag 0 to display
+		collapsibleString +=			"<input type='hidden' value='on' name='sensorTags[0][sensors][" + sensors[i] + "][display]'>"
+										// Set Grid for Sensor on Tag 0 to display as default 4x4
+		collapsibleString +=			"<input type='hidden' value='on' name='sensorTags[0][sensors][" + sensors[i] + "][grid][griddisplay]'>"
+		collapsibleString +=			"<input type='hidden' value='4' name='sensorTags[0][sensors][" + sensors[i] + "][grid][columns]'>"
+		collapsibleString +=			"<input type='hidden' value='4' name='sensorTags[0][sensors][" + sensors[i] + "][grid][rows]'>"
+		collapsibleString +=		"</div> " 
+		collapsibleString +=	"</div> " 
+		collapsibleString += "</div> "  
+	}
+	widgetList.innerHTML += collapsibleString;
+
+}
+
 
 showHideLabel = function(labelID) 
 {

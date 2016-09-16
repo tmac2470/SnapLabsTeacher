@@ -15,14 +15,15 @@
 	<title>Gen 2 Teacher APP</title>
 
 	<style> 
-		@import 'ui/css/nerld.css';
 		@import 'ui/css/jquery.mobile-1.4.5.min.css';
+		@import 'ui/css/nerld.css';
+		@import 'ui/css/jquery-ui.min.css';
 	</style>
 
 	<script>
 	//<link rel="stylesheet" href="https://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
 	</script>
-	 
+	  
 	<script>
 	// Redirect console.log to Evothings Workbench.
 		if (window.hyper && window.hyper.log) { console.log = hyper.log }
@@ -37,8 +38,10 @@
 	<script src="TeacherApp.js"></script>
 	<script src="TeacherSensorTagConnectionApp.js"></script>
 	<script src="libs/jquery/jquery-1.11.3.min.js"></script>
+	<script src="libs/jquery/jquery-ui.min.js"></script>
 	<script src="libs/jquery/jquery.mobile-1.4.5.min.js"></script>
 	<script src="libs/jquery/jquery.serializejson.min.js"></script>
+	<script src="libs/jquery/jquery.ui.touch-punch.min.js"></script> 
 
 	 
 </head> 
@@ -46,8 +49,43 @@
     <script>
 		var httpd = null;
 
-		function onLoad() {
+		function onLoad() { 
 			document.addEventListener("deviceready", onDeviceReady, false);
+			
+			// Based on http://embed.plnkr.co/WcIZlD/ 
+	  		$( ".widgetItem" ).draggable(
+				{cursor: 'move',
+				 helper: "clone",
+		         snap: '#canvaspanel'} 
+			);
+	
+			$(".selectionpanel").droppable({
+				drop: function(event, ui) {
+					var itemid = $(ui.draggable).attr("itemid");
+					var sensor = itemid.split("_");
+
+					$('.widgetItem').each(function() {
+						//console.log("DEBUG - Comparing for selection is " + itemid + " and adding to element #"+sensor[0]+"_Selection")
+						if ($(this).attr("itemid") === itemid) {
+							$(this).appendTo("#"+sensor[0]+"_Selection");
+						}
+					});
+				}
+			});
+
+			$("#canvaspanel").droppable({
+				drop: function(event, ui) {
+					var itemid = $(ui.draggable).attr("itemid");
+
+					$('.widgetItem').each(function() {
+						//console.log("DEBUG - Comparing for canvas is " + itemid + " and  " + $(this).attr("itemid"))
+						if ($(this).attr("itemid") === itemid) {
+							$(this).appendTo("#canvaspanel");
+						}
+					});
+				}
+			});
+ 
 		}
 		
 		function inputFocus(i){
@@ -59,9 +97,57 @@
 
 
 	</script>
-	 
-
 	<div data-role="page" id="pageHome" data-theme="b">
+        <div data-role="header" data-add-back-btn="true">
+			<h1> Asell Experiment App </h1> 
+			<a href="#pageShareFiles" data-icon="gear" class="ui-btn-right">File Sharing</a>
+		</div>
+		 
+		<div data-role="content">
+			<div data-role="content" data-theme="b">
+				<h1 class="logo">ASELL Teacher App<img src="ui/images/GrayLogoColour2.jpg"></h1> 
+			 
+				Choose whether to view our quick links to design experiments using widgets or have access to all configuration options through the full application. <br />
+			</div> 
+     
+			<a href="#pageQuickDesign"  data-role="button" data-theme="a">Go to the Quick Design</a>
+			<a href="#pageFullSite" data-role="button">Go to the full application</a>
+		</div>
+	</div>
+	
+	<div data-role="page" id="pageQuickDesign" data-theme="b">
+        <div data-role="header" data-add-back-btn="true">
+			<h1> Asell Teacher App </h1>  
+			<a href="index.html" class="ui-btn-left ui-icon-home ">Home</a>
+			<a href="#pageShareFiles" data-icon="gear" class="ui-btn-right">File Sharing</a>
+		</div>
+		
+		<div data-role="content">
+			<div data-role="content" data-theme="b">
+				<h1 class="logo">ASELL Teacher App<img src="ui/images/GrayLogoColour2.jpg"></h1> 
+			 
+				Design an experiment by selecting a sensor and dragging and dropping the required widgets
+				<br /><br />
+				<form id="quickDesignForm" >
+					<label for="name"><strong>Provide an Experiment Title:</strong></label>
+					<input data-theme="a" type="text" name="labTitle" value="" placeholder="SensorTag Investigation" />
+					<div id="canvaspanel" data-content-theme="b">
+
+					</div>
+					<input type="button" data-inline="true" data-icon="check" data-theme="b" name="submit"  value="Submit" onclick="quickDesignConfiguration()">
+					<input type="reset" data-inline="true" data-icon="delete" data-theme="a" data-role="button" value="Reset" onclick="resetQuickDesign()"/>
+
+				</form> 
+
+				<div data-role="collapsibleset" data-content-theme="a" data-mini="true" id="widgetset">
+					<script> createWidgets() </script>  
+				</div>
+         	   
+			</div>
+		</div>
+	</div>	
+	 
+	<div data-role="page" id="pageFullSite" data-theme="b">
         <div  data-role="header" data-add-back-btn="true">
 			<h1> Asell Teacher App </h1> 
 			<a href="#pageServerDetails" data-icon="gear" class="ui-btn-right">Server Details</a>
@@ -80,7 +166,7 @@
 	<div data-role="page" id="pageExperiment" data-theme="b">
         <div data-role="header" data-add-back-btn="true">
 			<a href="#pageSettings" data-icon="gear" class="ui-btn-right">Server Details</a>
-			<h1> Experiment Design </h1> 
+			<h1> Experiment Design </h1>  
 		</div>        
 
 		<div data-role="main" class="ui-content">
@@ -90,23 +176,40 @@
 			</h1>
 			<form id="experimentForm">
 				<label for="name"><strong>Provide an Experiment Title:</strong></label>
-				<input data-theme="a" type="text" name="labTitle" id="labTitle" value="SensorTag Experiment" />
+				<input data-theme="a" type="text" name="labTitle" id="labTitle"  value="" placeholder="SensorTag Investigation" />
 				
 				<div data-role="fieldcontain">
-					<label for="addDataStorage">Allow Data Storage</label>
-					<input  data-theme="a" type="checkbox" data-role="flipswitch" name="dataStorageAllowed" id="dataStorageAllowed" onchange="showHideLabel('dataStoragePrefixLabel')" >
+					<fieldset class='ui-grid-b'>
+						<div class='ui-block-a'>
+							<label for="addDataStorage">Allow Data Storage</label>
+							<input  data-theme="a" type="checkbox" data-role="flipswitch" name="dataStorageAllowed" id="dataStorageAllowed" onchange="showHideLabel('dataStoragePrefixLabel')" >
+						</div>
+						<div class='ui-block-b'>
+							<label for="add video">Allow Video:</label>
+							<input  data-theme="a" type="checkbox" data-role="flipswitch" name="videoAllowed" id="videoAllowed" onchange="showHideLabel('videoPrefixLabel')">
+						</div>
+						<div class='ui-block-c'>
+							<label for="add video">Autostart Graphs:</label>
+							<input  data-theme="a" type="checkbox" data-role="flipswitch" name="graphAutoStart" id="graphAutoStart">
+						</div>
+					</div
+
 				</div>
 				
 				<div data-role="fieldcontain" id="dataStoragePrefixLabel" + id + "label" style="display:none">
 					<label for="dataStoragePrefix"> Prefix for Data Storage File:</label>
 					<input  data-theme="a"type="text" name="dataStoragePrefix" value="" placeholder="sensorTag"/>
 				</div>
+				<div data-role="fieldcontain" id="videoPrefixLabel" + id + "label" style="display:none">
+					<label for="videoPrefix"> Prefix for Video File:</label>
+					<input  data-theme="a"type="text" name="videoPrefix" value="" placeholder="sensorTagVideo"/>
+				</div>
 
 				<div data-role="collapsible" data-content-theme="a" name="sensorTags[0][connect]"  style="display:block;" class="asellList">
 					<h3>First SensorTag Configuration</h3> 
 					<div id="sensortag0List">
 					<script> buildSensortagConfigHTML(0) </script>
-					</div>
+					</div> 
 				</div>
 
 				<div data-role="collapsible" data-content-theme="a" name="sensorTags[1][connect]"  style="display:block;" class="asellList">
@@ -281,6 +384,7 @@
 	</div>
 
 </body>
+
 </html>
 
 

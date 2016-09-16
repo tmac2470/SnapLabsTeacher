@@ -1,0 +1,31 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>jQuery UI Draggable + Touch-Punch + Android + Chrome Mobile= No click events</title>
+   
+	<style> 
+		@import 'ui/css/jquery-ui.min.css';
+	</style>  
+	
+</head>
+<body>
+
+  <p>jquery-ui-touch-punch is designed to enable jQuery UI functionality for touch devices. <a href="http://touchpunch.furf.com/">http://touchpunch.furf.com/</a><p>
+  <p>Chrome Mobile for Android breaks the functionality of the .click() method for elements with the .draggable() method attached to them. This includes elements nested within the draggable div.</p>
+  <p>Chrome appears to be more sensitive than the other browsers to the 'touchmove' event and is causing touch-punch's simulated click event to be cancelled.</p>
+  <p>I have recreated this on a Nexus 9 running Android 5.0.1 &amp; Samsung SM-T520 running 4.4.2</p>
+  <div id="draggable" class="ui-widget-content">
+    <p>Draggable Div</p>
+    <div id="clickAction">Click Me! (I should change colour)</div>
+    <br>
+    <a href="https://gist.github.com/macmadill/26e5b72aa25cde405423" target="_blank">Unresponsive Link</a>
+  </div>
+  
+	<script src="libs/jquery/jquery-1.11.3.min.js"></script>
+	<script src="libs/jquery/jquery-ui.min.js"></script>
+	<script src="libs/jquery/jquery.ui.touch-punch.min.js"></script> 
+    <script>
+  $( "#draggable" ).draggable();
+</script>
+</body>
+</html>
