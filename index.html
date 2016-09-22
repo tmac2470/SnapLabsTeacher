@@ -7,7 +7,7 @@
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, user-scalable=no,
-		shrink-to-fit=yes, initial-scale=1.0" />
+		shrink-to-fit=yes, initial-scale=1.0" /> 
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate" />
 	<meta http-equiv="pragma" content="no-cache" />
@@ -15,8 +15,8 @@
 	<title>Gen 2 Teacher APP</title>
 
 	<style> 
-		@import 'ui/css/jquery.mobile-1.4.5.min.css';
-		@import 'ui/css/nerld.css';
+		@import 'ui/css/jquery.mobile-1.4.5.min.css'; 
+		@import 'ui/css/nerld.css'; 
 		@import 'ui/css/jquery-ui.min.css';
 	</style>
 
@@ -60,7 +60,7 @@
 			);
 	
 			$(".selectionpanel").droppable({
-				drop: function(event, ui) {
+				drop: function(event, ui) {  
 					var itemid = $(ui.draggable).attr("itemid");
 					var sensor = itemid.split("_");
 
@@ -76,6 +76,7 @@
 			$("#canvaspanel").droppable({
 				drop: function(event, ui) {
 					var itemid = $(ui.draggable).attr("itemid");
+					document.getElementById("draganddrop").style.display = "none";
 
 					$('.widgetItem').each(function() {
 						//console.log("DEBUG - Comparing for canvas is " + itemid + " and  " + $(this).attr("itemid"))
@@ -99,40 +100,44 @@
 	</script>
 	<div data-role="page" id="pageHome" data-theme="b">
         <div data-role="header" data-add-back-btn="true">
-			<h1> Asell Experiment App </h1> 
+			<h1> Asell Teacher App </h1> 
 			<a href="#pageShareFiles" data-icon="gear" class="ui-btn-right">File Sharing</a>
 		</div>
 		 
 		<div data-role="content">
 			<div data-role="content" data-theme="b">
-				<h1 class="logo">ASELL Teacher App<img src="ui/images/GrayLogoColour2.jpg"></h1> 
-			 
-				Choose whether to view our quick links to design experiments using widgets or have access to all configuration options through the full application. <br />
+				<h1 class="logo">SensorTag Investigation<img src="ui/images/GrayLogoColour2.jpg"></h1> 
+				<h1 class="logo">Design </h1>
 			</div> 
-     
-			<a href="#pageQuickDesign"  data-role="button" data-theme="a">Go to the Quick Design</a>
-			<a href="#pageFullSite" data-role="button">Go to the full application</a>
+			<h2 class="aselltext">
+				Choose whether to view our quick links to design experiments using drag and drop widgets, or have access to all configuration options through the full application. <br />
+			<br /></h2>
+			
+			<a href="#pageQuickDesign" data-transition="slide"  data-role="button" data-theme="a">Go to the Quick Design</a>
+			<a href="#pageFullSite" data-transition="slide"  data-role="button">Go to the full application</a>
 		</div>
 	</div>
 	
 	<div data-role="page" id="pageQuickDesign" data-theme="b">
-        <div data-role="header" data-add-back-btn="true">
+        <div data-role="header" data-add-back-btn="true"> 
 			<h1> Asell Teacher App </h1>  
-			<a href="index.html" class="ui-btn-left ui-icon-home ">Home</a>
-			<a href="#pageShareFiles" data-icon="gear" class="ui-btn-right">File Sharing</a>
+			<a href="index.html" data-transition="slideup" class="ui-btn-left ui-icon-home ">Home</a>
+			<a href="#pageShareFiles" data-transition="slidedown"  data-icon="gear" class="ui-btn-right">File Sharing</a>
 		</div>
 		
 		<div data-role="content">
 			<div data-role="content" data-theme="b">
-				<h1 class="logo">ASELL Teacher App<img src="ui/images/GrayLogoColour2.jpg"></h1> 
+				<h1 class="logo">Quick Design<img src="ui/images/GrayLogoColour2.jpg"></h1> 
 			 
-				Design an experiment by selecting a sensor and dragging and dropping the required widgets
-				<br /><br />
+				<h2 class="aselltext">Design an experiment by selecting a sensor and dragging and dropping the required widgets
+				</h2>
+				<br/>
 				<form id="quickDesignForm" >
 					<label for="name"><strong>Provide an Experiment Title:</strong></label>
 					<input data-theme="a" type="text" name="labTitle" value="" placeholder="SensorTag Investigation" />
-					<div id="canvaspanel" data-content-theme="b">
-
+					<br />
+					<div id="canvaspanel" data-content-theme="b" >
+						<span id="draganddrop">Drag and drop widgets here</span>
 					</div>
 					<input type="button" data-inline="true" data-icon="check" data-theme="b" name="submit"  value="Submit" onclick="quickDesignConfiguration()">
 					<input type="reset" data-inline="true" data-icon="delete" data-theme="a" data-role="button" value="Reset" onclick="resetQuickDesign()"/>
@@ -150,28 +155,36 @@
 	<div data-role="page" id="pageFullSite" data-theme="b">
         <div  data-role="header" data-add-back-btn="true">
 			<h1> Asell Teacher App </h1> 
-			<a href="#pageServerDetails" data-icon="gear" class="ui-btn-right">Server Details</a>
+			<a href="#pageShareFiles" data-transition="slidedown" data-icon="gear" class="ui-btn-right">File Sharing</a>
+			<a href="index.html" data-transition="slideup" class="ui-btn-left ui-icon-home ">Home</a>
 		</div>        
 		
 		<div data-role="content" data-theme="b">
-			<h1 class="logo" >ASELL Teacher App <img src="ui/images/GrayLogoColour2.jpg"></h1>
-				Here you can configure your SensorTags with names or design a new experiment for your students.
-				The files you create can be shared and are also available on the local server (See <a href="#pageServerDetails"> Server Details </a>).<br>
-			<a href="#pageSensortagConfig" data-role="button">Sensor Tag Configuration</a>
-			<a href="#pageExperiment" data-role="button">Design an Experiment</a>
-			<a href="#pageShareFiles" data-role="button">Share Your Files</a>
+			<h1 class="logo" >SensorTag Investigation <img src="ui/images/GrayLogoColour2.jpg"></h1>
+			<h1 class=logo> Design</h1>
+			<h2 class="aselltext">
+				Design your own SensorTag configuration including all available configuration options:<br>
+			</h2>
+			<a href="#pageExperiment" data-role="button"  data-theme="a">Design a SensorTag Investigation</a>
+			Note: The files you create can be shared and are also available on the local server (go to <a href="#pageShareFiles"> File Sharing </a>).<br>
+			
+			<br />
+			<h2 class="aselltext">
+				You can also create a configuration file that allows you to name SensorTags for tracking and use in investigations.<br>
+			</h2>
+			<a href="#pageSensortagConfig" data-role="button"  data-theme="a">SensorTag Configuration</a>
 		</div>
 	</div>
 	  
 	<div data-role="page" id="pageExperiment" data-theme="b">
         <div data-role="header" data-add-back-btn="true">
-			<a href="#pageSettings" data-icon="gear" class="ui-btn-right">Server Details</a>
-			<h1> Experiment Design </h1>  
+			<a href="#pageShareFiles" data-icon="gear" class="ui-btn-right">File Sharing</a>
+			<h1> Asell Teacher App </h1>  
 		</div>        
 
 		<div data-role="main" class="ui-content">
 			<h1 class='logo'>
-				Design an Experiment
+				Design an Investigation
 				<img src="ui/images/GrayLogoColour2.jpg">
 			</h1>
 			<form id="experimentForm">
@@ -221,7 +234,7 @@
 
 				<a href="#pageHome" data-inline="true" data-icon="delete" data-theme="a" data-role="button">Cancel</a>
 				<input type="button" data-inline="true" data-icon="check" data-theme="b" name="submit" id="submit" value="Submit" onclick="getConfigFileName('json')" />
-				<input type="reset" data-inline="true" data-icon="arrow-r" data-theme="a" data-role="button" id="newExperiment" value="New Experiment" />
+				<input type="reset" id="experimentFormReset" data-inline="true" data-icon="arrow-r" data-theme="a" data-role="button" id="newExperiment" value="New Experiment" />
 
 			</form>
 		
@@ -230,25 +243,38 @@
 	
 	<div id="pageSensortagConfig" data-role="page"  data-theme="b">
 		<div data-role="header" data-add-back-btn="true">
-			<h1>SensorTag Configuration</h1>
+			<h1>Asell Teacher App</h1>
 			<a href="index.html" class="ui-btn-right ui-icon-home ">Home</a>
 		</div>
 		<div data-role="content">
 			<div data-role="content" data-theme="b" class='logo'>
-				<img src="ui/images/GrayLogoColour2.jpg">
-				Use this page to configure your SensorTags to have names associated with unique ID's.
-				You can also set the configuration institution and owner on the file
+				<h1 class="logo">SensorTag Configuration<img src="ui/images/GrayLogoColour2.jpg"></h1>
 			<br />
 			</div>
+			<h2 class="aselltext">
+				Use this page to configure your SensorTags to have names associated with unique ID's.
+				You can also set the configuration institution and owner on the file.
+			<br />
+			<br />
+				You can inspect the current configuration file:
+			</h2>
 			<div  data-role="collapsible" data-content-theme="a" class="asellList">
-			   <h3>Current Configuration File</h3>  
+			   <h3>View current SensorTag configuration file</h3>  
 				<p id='sensortagConfigFileData'>
 				</p>
 				<a onclick="viewSensorTagConfigFile()" data-theme="b" data-role="button" data-mini="true"> Load latest file </a>
 			</div> 
- 
+
+			<h2 class="aselltext">
+			<br />
+				Update the current configuration file:
+			</h2>			
 			<a href="#pageConfigData" data-role="button"  data-index="new"> Change Institution or Owner </a>
 			<a href="#pageAddSensortags" data-role="button" > Add or Update SensorTag names</a>
+			<h2 class="aselltext">
+			<br />
+				Create a new SensorTag configuration file:
+			</h2>	
 			<a id="overwriteSensortagConfigFile" href="#newConfigData" data-role="button" > Create new Sensortag configuration</a>
 	
 		</div>
@@ -256,22 +282,25 @@
 
 	<div id="pageConfigData" data-role="page"  data-theme="b">
 		<div data-role="header" data-add-back-btn="true">
-			<h1>Update SensorTag Configuration</h1>
+			<h1>Asell Teacher App</h1>
 			<a href="index.html" class="ui-btn-right ui-icon-home ">Home</a>
 		</div>
 		
 		<div data-role="main" class="ui-content">
 			<p class='logo' >
-				<img src="ui/images/GrayLogoColour2.jpg">
-				Enter new Institution or Owner names below. To keep existing values, leave the field blank. 
+				<h1 class="logo"> Update Institution or <img src="ui/images/GrayLogoColour2.jpg"></h1>
+				<h1 class="logo">  Owner </h1>
 			</p>
 
+			<h2 class="aselltext">Enter new Institution or Owner names below. To keep existing values, leave the field blank. 
+			</h2>
+			<br/>
 			<form id="sensorTagConfigForm" >
 				<label for="institution"><strong>New Institution Name:</strong></label>
-				<input type="text" name="institution" id="institution" value="" />
+				<input type="text" name="institution" id="institution" data-theme="a" value="" />
 
 				<label for="owner"><strong>New Owner Name:</strong></label>
-				<input type="text" name="owner" id="owner" value="" />
+				<input type="text" name="owner" id="owner" value="" data-theme="a"/>
 
 				<a href="#pageSensortagConfig" data-inline="true" data-icon="delete" data-theme="a" data-role="button" >Cancel</a>
 				<input type="button" data-inline="true" data-icon="check" data-theme="b" name="submit" id="institutionOwnerUpdateSubmit" value="Update" onclick="updateInstitutionOwner()">
@@ -281,7 +310,7 @@
 
 	<div id="newConfigData" data-role="page" data-theme="b">
 		<div data-role="header" data-add-back-btn="true">
-			<h1>Update SensorTag Configuration</h1> 
+			<h1>Asell Teacher App</h1> 
 			<a href="index.html" class="ui-btn-right ui-icon-home ">Home</a>
 		</div>
 		<div data-role="content">
@@ -305,56 +334,70 @@
 	
 	<div id="pageAddSensortags" data-role="page" data-theme="b">
 		<div data-role="header" data-add-back-btn="true">
-			<h1>Add SensorTags to Config</h1>
+			<h1>Asell Teacher App</h1>
 			<a href="index.html" class="ui-btn-right ui-icon-home">Home</a>
 		</div>
 		<div data-role="content">
 			<div id="sensortagScanning" >
 			<div data-role="content" data-theme="b" class='logo'>
-				<img src="ui/images/GrayLogoColour2.jpg">
-				To add SensorTags to the configuration file: <br />
-				1. Start scanning for available SensorTags. <br />
-				2. Select the SensorTag to connect to. <br />
-				3. Press any key on the SensorTag to create or update the SensorTag name.
+				<h1 class="logo">Add SensorTags to  <img src="ui/images/GrayLogoColour2.jpg"></h1> 
+				<h1 class="logo">Configuration</h1> 
 			</div>
 
-			<button id="startScanButton" onclick="app.ui.onStartScanButton()" class="asellgreen" style="display:block" data-inline="true">
-				START SCANNING FOR SENSORTAGS
-			</button>
-
-			<button id="pauseScanButton" onclick="app.ui.onPauseScanButton()" class="asellorange" style="display:none" data-inline="true">
-				PAUSE SCANNNING
-			</button>
+			<h2 class="aselltext">
+				To add SensorTags to the configuration file: <br />
+				1. Press button to start scanning for available SensorTags. <br />
+				2. Select the SensorTag to connect to. <br />
+				3. Press any key on the SensorTag to create or update the SensorTag name.
+			</h2>
+			<br/>
+			
+			<div class='ui-grid-a ui-responsive'>
+				<div class='ui-block-a'>
+					<button id="startScanButton" onclick="onStartScanButton()" class="asellbrightgreen" style="display:block" data-inline="true">
+						START SCANNING FOR SENSORTAGS
+					</button>
+					<button id="pauseScanButton" onclick="onPauseScanButton()" class="asellorange" style="display:none" data-inline="true">
+						PAUSE SCANNING
+					</button>
+				</div>
+				<div class='ui-block-b' style='text-align: right;'>
+					<button id="resetScanButton" onclick="onResetScanButton()" data-theme="a" style="display:block;float:right" data-inline="true" >
+						RESET ALL
+					</button>
+				</div>
+			</div>
 
 			<p><strong>Scan Status: </strong><span id="scan-status">Scanning Paused</span></p>
 			<p><strong>SensorTag Connection Status: </strong> <span id="StatusData">Press "Start Scanning For SensorTags" to look for SensorTags</span></p>
-			<div id="deviceInfo" style="display:none">
-				<p><strong> <span id="KeypressData">Press any key to on the SensorTag to add it to the configuration file</strong> </span> </p>
-				<p>
-					SensorTag device model: <span id="DeviceModel">?</span><br />
-					Firmware version: <span id="FirmwareData">?</span><br />
-					SensorTag SystemID: <span id="SystemID">?</span><br />
-				</p>
-			</div>
+
 			<div data-inset="true" id="found-devices" class="dynamic"></div>
 			</div>
-		</div>
-	</div>
 
+			</div>
+	</div>
+ 
 	<div data-role="page" id="pageShareFiles" data-theme="b">
 		<div data-role="header" data-add-back-btn="true">
-			<h1> Sharing Configuration Files </h1> 
+			<h1> Asell Teacher App </h1> 
 			<a href="index.html" class="ui-btn-right ui-icon-home">Home</a>
 		</div>
 		
 		<div data-role="main" class="ui-content">
-			<h1 class='logo'>Select the file to share
+			<h1 class='logo'>Configuration File Sharing
 				<img src="ui/images/GrayLogoColour2.jpg">
 			</h1>
 			<div> 
-			 Selecting a file allows you to email the selected file.  
+			 <h2 class="aselltext">Files can be emailed or downloaded from the locally running server.
+			 <p>
+			 <strong>Server Details:</strong>
+			 </h2>
 			</div>
-			
+			<div id='url'>Address </div>
+			<div id='localpath'></div>
+			<div id='location'></div>
+			<br/>
+			 <h2 class="aselltext"><strong>Email files:</strong></h2>
 			<div  data-role="collapsible" data-content-theme="c" class="asellList">
 			   <h3>Choose a data file to share</h3>
 				<ul id="configFileList" data-role="listview" data-inset="true">
@@ -364,24 +407,8 @@
 
  		</div>  
 	</div> 
- 
+  
 
-	<div id="pageServerDetails" data-role="page" data-theme="b" >
-		<div data-role="header" data-add-back-btn="true">
-			<h1>Server Details</h1>
-			<a href="index.html" data-icon="home" class="ui-btn-right ui-icon-home">Home</a>
-		</div>
-		<div data-role="content">
-			<script> //updateStatus() </script>
-
-			<h1  class='logo'>Local Server Details
-				<img src="ui/images/GrayLogoColour2.jpg">
-			</h1>
-			<div id='url'>Address </div>
-			<div id='localpath'></div>
-			<div id='location'></div>
-		</div>
-	</div>
 
 </body>
 

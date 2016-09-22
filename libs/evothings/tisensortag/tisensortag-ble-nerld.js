@@ -429,9 +429,9 @@
 		 * @instance
 		 * @public
 		 */
-		instance.connectToSensorTagAddress = function(scanTimeMilliseconds, lookingFor, callback)
+		instance.connectToSensorTagAddressNERLD = function(scanTimeMilliseconds, lookingFor, callback)
 		{
-			instance.callStatusCallback(sensortag.status.SCANNING)
+			instance.callStatusCallback(sensortag.status.CONNECTING)
 			instance.disconnectDevice()
 			evothings.easyble.stopScan()
 			evothings.easyble.reportDeviceOnce(true) // was false TCM
@@ -497,19 +497,21 @@
 			function deviceFound(device)
 			{
 
-				console.log("DEBUG - Reading Address " + device.name + " while looking for " + lookingFor);
+				console.log("DEBUG - Reading Address " + device.address + " while looking for " + lookingFor);
 				
 				// Update the device if it has the same address in the advertised data
 				// Valid for Android only. iOS will have to read SystemID and convert this suitably.
 				if (device.rssi != 127 && instance.deviceIsSensorTag(device) && device.address == lookingFor)
 				{
-					console.log('deviceFound: ' + device.name)
+					console.log('deviceFound: ' + device.address)
 
 					// If this is the first SensorTag found,
 					// start the timer that makes the connection.
 					if (!correctDevice)
 					{
-						console.log('First found ... connecting to ' + device.name)
+						console.log('DEBUG - First found ... connecting to ' + device.address)
+							instance.callStatusCallback(
+								sensortag.status.SENSORTAG_CONNECTING)
 						stopNoTagFoundTimer()
 						startConnectTimer()
 					}
@@ -598,12 +600,12 @@
 		{
 			instance.device = device
 			instance.callStatusCallback(sensortag.status.CONNECTING)
-			//console.log("DEBUG - in instance.connectAndAddToConfig")
+			console.log("DEBUG - in instance.connectAndAddToConfig")
 			instance.device.connect(
 				function(device) 
 				{
 					instance.callStatusCallback(sensortag.status.CONNECTED)
-					//console.log("DEBUG - in instance.connectToDevice - going to read device info")
+					console.log("DEBUG - in instance.connectToDevice - going to read device info")
 					instance.readDeviceInfo(callback)
 				},
 				instance.errorFun)

@@ -136,7 +136,7 @@
 		mLoadedScripts[url] = 'loadingcomplete';
 	};
 
-	/**
+	/** 
 	 * <p>Add a callback that will be called when all scripts are loaded.</p>
 	 * <p><strong>It is good practise to always use this function when
 	 * loading script asynchronously or using a library that does so.</strong></p>
@@ -148,10 +148,11 @@
 	{
 		// If scripts are already loaded call the callback directly,
 		// else add the callback to the callbacks array.
+		//console.log("DEBUG - evothings scripts")
 		if (0 != Object.keys(mLoadedScripts).length &&
 			0 == mScriptLoadingCounter)
 		{
-			callback && callback();
+			callback && callback(); 
 		}
 		else
 		{

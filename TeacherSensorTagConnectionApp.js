@@ -1,56 +1,61 @@
-// JavaScript code for the BLE Scan example app.
+// JavaScript code for the BLE Scan example 
 
 // Application object.
-var app = {};
 
 // Device list.
-app.devices = {};
-
-// UI methods.
-app.ui = {};
+devices = {};
 
 // Timer that updates the device list and removes inactive
 // devices in case no devices are found by scan.
-app.ui.updateTimer = null;
+updateTimer = null;
 
 // SensorTag methods.
-app.sensortag = {};
+var sensortag
 
 var connectOnce = {}; 
 
 // SensorTag instance
-var sensortag
 
-app.initialize = function()
+/*initialize = function()
 {
 	document.addEventListener(
 		'deviceready',
-		function() { evothings.scriptsLoaded(app.onDeviceReady) },
-		false);
-};
+		function() { 
+			evothings.scriptsLoaded(initialiseSensorTag)
+			console.log("DEBUG - Adding device ready function")
+			},
+		false)
+};*/
 
-app.onDeviceReady = function()
+function initialiseSensorTagTeacher()
 {
-	evothings.scriptsLoaded(app.sensortag.initialiseSensorTag)
-	
-	// Not used.
-	// Here you can update the UI to say that
-	// the device (the phone/tablet) is ready
-	// to use BLE and other Cordova functions.
-};
+	// Create First SensorTag CC2650 instance.
+	sensortag = evothings.tisensortag.createInstance(
+		evothings.tisensortag.CC2650_BLUETOOTH_SMART)
+	sensortag.connected = false;
+
+	sensortag
+		.statusCallback(statusHandlerTeacher)
+		.errorCallback(errorHandlerTeacher)
+		.keypressCallback(keypressHandlerTeacher)
+
+	console.log("DEBUG - sensorTag initialised - Teacher")
+} 
 
 // Start the scan. Call the callback function when a device is found.
 // Format:
 //   callbackFun(deviceInfo, errorCode)
 //   deviceInfo: address, rssi, name
 //   errorCode: String
-app.startScan = function(callbackFun)
+//startScan = function(callbackFun)
+startScan = function(callbackFun)  
 {
-	app.stopScan();
+	stopScan();
 
 	evothings.ble.startScan(
 		function(device)
 		{
+			//console.log("Device found. Name is " +  device.name)
 			// Report success. Sometimes an RSSI of +127 is reported.
 			// We filter out these values here.
 			// Look only for SensorTags
@@ -60,7 +65,7 @@ app.startScan = function(callbackFun)
 					callbackFun(device, null);
 				}
 				else{
-					console.log("Not a sensorTag")
+					//console.log("Not a sensorTag. Name is " +  device.name)
 				}
 			}
 		}, 
@@ -73,47 +78,63 @@ app.startScan = function(callbackFun)
 };
 
 // Stop scanning for devices.
-app.stopScan = function()
+stopScan = function()
 {
 	evothings.ble.stopScan();
 };
 
 // Called when Start Scan button is selected.
-app.ui.onStartScanButton = function()
+onStartScanButton = function()
 {
-	app.startScan(app.ui.deviceFound);
-	app.ui.displayStatus('Scanning...');
-	app.ui.updateTimer = setInterval(app.ui.displayDeviceList, 500);
+	startScan(deviceFound);
+	displayStatus('Scanning...');
+	updateTimer = setInterval(displayDeviceList, 500);
+	displayValue('StatusData', "Searching for SensorTags. To connect, press one of the green SensorTag connection buttons below.")
 	document.getElementById("startScanButton").style.display = 'none'
 	document.getElementById("pauseScanButton").style.display = 'block'
 };
 
 // Called when Stop Scan button is selected.
-app.ui.onStopScanButton = function()
+onStopScanButton = function()
 {
-	app.stopScan();
-	app.devices = {};
-	app.ui.displayStatus('Scan Paused');
-	//app.ui.displayDeviceList();
-	clearInterval(app.ui.updateTimer);
+	stopScan();
+	devices = {};
+	displayStatus('Scan Paused');
+	displayValue("StatusData","Scanning Paused. Click on a green SensorTag connection button to add or change configuration file.")
+	//displayDeviceList();
+	clearInterval(updateTimer);
 	document.getElementById("startScanButton").style.display = 'block'
 	document.getElementById("pauseScanButton").style.display = 'none'
 };
 
 // Called when Pause Scan button is selected.
-app.ui.onPauseScanButton = function()
+onPauseScanButton = function()
 {
-	app.stopScan();
-	//app.devices = {};
-	app.ui.displayStatus('Scan Paused');
-	//app.ui.displayDeviceList();
-	clearInterval(app.ui.updateTimer);
+	stopScan();
+	//devices = {};
+	displayStatus('Scan Paused');
+	displayValue("StatusData","Scanning Paused. Click on a green SensorTag connection button to add or change configuration file.")
+	//displayDeviceList();
+	clearInterval(updateTimer);
 	document.getElementById("startScanButton").style.display = 'block'
 	document.getElementById("pauseScanButton").style.display = 'none'
 };
 
+onResetScanButton = function(){
+	stopScan();
+	devices = {};
+	connectOnce = {};
+	displayStatus('Scan Paused');
+	displayValue("StatusData","Scanning Paused. Click on a green SensorTag connection button to add or change configuration file.")
+	//displayDeviceList();
+	clearInterval(updateTimer);
+	document.getElementById("startScanButton").style.display = 'block'
+	document.getElementById("pauseScanButton").style.display = 'none'
+	document.getElementById("found-devices").innerHTML = ''
+}
+
 // Called when a device is found.
-app.ui.deviceFound = function(device, errorCode)
+deviceFound = function(device, errorCode)
 {
 	if (device)
 	{
@@ -122,23 +143,23 @@ app.ui.deviceFound = function(device, errorCode)
 		device.timeStamp = Date.now();
 
 		// Insert the device into table of found devices.
-		app.devices[device.address] = device;
+		devices[device.address] = device;
 	}
 	else if (errorCode)
 	{
-		app.ui.displayStatus('Scan Error: ' + errorCode);
+		displayStatus('Scan Error: ' + errorCode);
 	}
 };
 
 // Display the device list.
-app.ui.displayDeviceList = function()
+displayDeviceList = function()
 {
 	// Clear device list.
 	$('#found-devices').empty();
 
 	var timeNow = Date.now();
 
-	$.each(app.devices, function(key, device)
+	$.each(devices, function(key, device)
 	{
 		// Only show devices that are updated during the last 10 seconds.
 		if (device.timeStamp + 10000 > timeNow)
@@ -157,122 +178,101 @@ app.ui.displayDeviceList = function()
 				//+	device.rssi + '<br />'
 				//+ 	'<div style="background:rgb(225,0,0);height:20px;width:'
 				//+ 		rssiWidth + '%;"></div>'
-				+	'<button id="' + device.address +'Connect" data-inline="true" onclick="app.sensortag.connect(\'' +  device.address + '\', app.sensortag.addToConfig)" class="asellbrightgreen"> <strong> press to connect to ' + device.name + '</strong> </button>' 
-				+ '<button id="' + device.address +'Disconnect" data-inline="true" onclick="app.sensortag.disconnect(\'' +  device.address + '\')" class="asellred" style="display:none"> <strong> Disconnect </strong> </button>'
+				+	'<button id="' + device.address +'Connect" data-inline="true" onclick="connect(\'' +  device.address + '\', addToConfig)" class="asellbrightgreen"> <strong> press to connect to ' + device.name + '</strong> </button>' 
+				+ '<button id="' + device.address +'Disconnect" data-inline="true" onclick="disconnect(\'' +  device.address + '\')" class="asellred" style="display:none"> <strong> Disconnect </strong> </button>'
 				+ 	'<div style="background:rgb(225,0,0);height:20px;width:'
 				+ 		rssiWidth + '%;"></div>'
 				+ '</br>'
 			);
 			$('#found-devices').append(element);
-			console.log("DEBUG - Found element with " + device.address)
+			//console.log("DEBUG - Found element with " + device.address + " and  details " + JSON.stringify(device))
 		} 
 	});
 };
 
 // Display a status message
-app.ui.displayStatus = function(message)
+displayStatus = function(message)
 {
 	$('#scan-status').html(message);
 };
 
 
-
-app.sensortag.initialiseSensorTag = function()
-{
-	// Create SensorTag CC2650 instance.
-	sensortag = evothings.tisensortag.createInstance(
-		evothings.tisensortag.CC2650_BLUETOOTH_SMART)
-
-	// Uncomment to use SensorTag CC2541.
-	//sensortag = evothings.tisensortag.createInstance(
-	//	evothings.tisensortag.CC2541_BLUETOOTH_SMART)
-
-	//
-	// Here sensors are set up.
-	//
-	// If you wish to use only one or a few sensors, just set up
-	// the ones you wish to use.
-	//
-	// First parameter to sensor function is the callback function.
-	// Several of the sensors take a millisecond update interval
-	// as the second parameter.
-	//
-	sensortag
-		.statusCallback(app.sensortag.statusHandler)
-		.errorCallback(app.sensortag.errorHandler)
-		.keypressCallback(app.sensortag.keypressHandler)
-
-}
-
-/*app.sensortag.connect = function()
+/*sensortag.connect = function()
 {
 	sensortag.connectToNearestDevice()
 }*/
 
-app.sensortag.connect = function(address, callback) 
+connect = function(address, callback) 
 {
-	console.log("Connect to " + address)
-	app.ui.onPauseScanButton();
+	console.log("DEBUG - Connect to " + address)
+	onPauseScanButton();
+	displayValue("StatusData","Connecting to SensorTag ...")
+
 	// This may work only on Android where the Address s advertised
-	sensortag.connectToSensorTagAddress(1000, address, callback)
+	sensortag.connectToSensorTagAddressNERLD(1000, address, callback)
 }
 
 
-app.sensortag.disconnect = function(address)
+disconnect = function(address)
 {
 	sensortag.disconnectDevice()
-	app.sensortag.displayValue(address+'Connect', "Added to configuration: " + address)
+	displayValue(address+'Connect', "Added to configuration: " + address)
 	hideElementView(address+'Disconnect')
-	hideElementView('deviceInfo')
+	displayValue("StatusData", "No SensorTag connected.  Press the green connection button below to update configuration file.")
+	//hideElementView('deviceInfo')
 }
 
-app.sensortag.statusHandler = function(status)
+statusHandlerTeacher = function(status)
 {
-	if ('DEVICE_INFO_AVAILABLE' === status)
+	/*if ('DEVICE_INFO_AVAILABLE' === status)
 	{
 		// Show device model and firmware version.
 		showElementView('deviceInfo')
-		app.sensortag.displayValue('DeviceModel', sensortag.getDeviceModel())
-		app.sensortag.displayValue('FirmwareData', sensortag.getFirmwareString())
-		app.sensortag.displayValue('SystemID', sensortag.getSystemID())
+		displayValue('DeviceModel', sensortag.getDeviceModel())
+		displayValue('FirmwareData', sensortag.getFirmwareString())
+		displayValue("StatusData", "Reading SensorTag data")
+		//displayValue('SystemID', sensortag.getSystemID())
 
-	}
+	}*/
 
-	app.sensortag.displayValue('StatusData', status)
+	displayValue('StatusData', status)
 }
 
-app.sensortag.errorHandler = function(error)
+errorHandlerTeacher = function(error)
 {
 	console.log('Error: ' + error)
 
 	if (evothings.easyble.error.DISCONNECTED === error)
 	{
-		console.log("rest display - error")
+		displayValue('StatusData', 'Error: ' + error)
+		showElementView(device.address+'Disconnect')
 	}
 	else
 	{
-		app.sensortag.displayValue('StatusData', 'Error: ' + error)
+		displayValue('StatusData', 'Error: ' + error)
+		showElementView(device.address+'Disconnect')
 	}
 }
 
-app.sensortag.keypressHandler = function(data)
+keypressHandlerTeacher = function(data)
 {
+	console.log("DEBUG - Key Pressed")
 	// Enter the details only once key press complete
 	if(data=='0')
 	{
 		navigator.notification.prompt(
 			'Please enter the name you would like for this Sensor',  // message
-			app.sensortag.addSensor,     // callback to invoke
+			addSensor,     // callback to invoke
 			'SensorTag Name', // title
 			['Ok','Exit'],             // buttonLabels
 			'SensorTag'                 // defaultText
 		);
 	}
 
-	app.sensortag.displayValue('KeypressData', "SensorTag found!")
+	displayValue('KeypressData', "SensorTag found!")
 }
 
-app.sensortag.addSensor = function(results)
+addSensor = function(results)
 {
 	var newSensor = {};
 	newSensor.name = results.input1;
@@ -280,31 +280,33 @@ app.sensortag.addSensor = function(results)
 	readSensorTagConfigFile(updateSensorTagConfigFileSensors,newSensor);
 }
 
-app.sensortag.displayValue = function(elementId, value)
+displayValue = function(elementId, value)
 {
+	//console.log("DEBUG - trying to set value to " + value)
 	document.getElementById(elementId).innerHTML = value
 }
 
-app.sensortag.setBackgroundColor = function(color)
+setBackgroundColor = function(color)
 {
 	document.documentElement.style.background = color
 	document.body.style.background = color
 }
 
-app.sensortag.addToConfig = function(device)
+addToConfig = function(device)
 {
 	console.log("DEBUG - addToConfig passed sysID is " + JSON.stringify(device) + " Value for address is " +sensortag.getSystemID() )
 	// Added check to account for double connection
 	// TO DO - find source of double connection 
 	if(device.address in connectOnce && connectOnce[device.address] !== "false")
 	{ 
-		//console.log("DEBUG - Already Did Connection")
+		console.log("DEBUG - Already Did Connection")
 		connectOnce[device.address] = "false";
 	} else{
+		displayValue("StatusData", "Searching configuration file for SensorTag ...") 
 		readSensorTagConfigFile(checkForExistingSensortag,sensortag.getSystemID());
 		connectOnce[device.address] = "true";
 	}	
-	app.sensortag.displayValue(device.address+'Connect', "Connected: " + device.address)
+	displayValue(device.address+'Connect', "Connected: " + device.address)
 	showElementView(device.address+'Disconnect')
 	//console.log("DEBUG - connectOnce is " + JSON.stringify(connectOnce))
 }
@@ -341,7 +343,12 @@ function byteToHexStr(d)
 }
 
 
+document.addEventListener(
+	'deviceready',
+	function() { evothings.scriptsLoaded(initialiseSensorTagTeacher) },
+	false)
+	
+//initialize();
 
-app.initialize();
 
 

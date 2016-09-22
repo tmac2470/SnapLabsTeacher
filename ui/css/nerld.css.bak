@@ -47,24 +47,8 @@ text-align:center;
 	width:120px;
 }
 
-/*  ----------------------------------------------------------
-								Heading and text
-	---------------------------------------------------------- */
 
-.aselltext{
-	color:#3CFB7A!important;
-	font-weight: normal;
-	font-size: 1em;
-}	
 
-.sensortitle{
-	color:#2EA89F!important; 
-}
-
-hr { 
-    border-width: 2px;
-	border-color:#2EA89F!important; 
-}
 /*  ----------------------------------------------------------
 								LISTS
 	---------------------------------------------------------- */
@@ -139,16 +123,21 @@ body h1#labTitle {
 	width:95%;
 	min-height:100px;
 	overflow:auto;
-	background-color:white;
+	background-color:#2EA89F;
     border-top: solid 5px #FF903D;
     border-left: solid 5px #FF903D;
     border-right: solid 5px #FF903D;
     border-bottom: solid 5px #FF903D;
-	padding: 5px;
 }
 
-.widgetItem{
-	background-color: #2EA89F!important;
+.widgetitem{
+	/* To correctly align image, regardless of content height: */
+    vertical-align: top;
+    display: inline-block;
+    /* To horizontally center images and caption */
+    text-align: center;
+    /* The width of the container also implies margin around the images. */
+    width: 80px;
 
 }
 
@@ -356,7 +345,7 @@ input.btn-group.asellred:checked + label {
 .color_asellorange { color: #FF903D; }
 .bg_asellorange, input.asellorange, button.asellorange, ul.asellorange li, label.asellorange,
 input.asellorange + label {
-	background-color: #FF903D!important;
+	background-color: #FF903D;
 	font-weight: bold;
 }
 /* Downpressed button. */
