@@ -14,7 +14,7 @@
 	<meta http-equiv="expires" content="-1" />
 	<title>Gen 2 Teacher APP</title>
 
-	<style> 
+	<style>  
 		@import 'ui/css/jquery.mobile-1.4.5.min.css'; 
 		@import 'ui/css/nerld.css'; 
 		@import 'ui/css/jquery-ui.min.css';
@@ -86,7 +86,17 @@
 					});
 				}
 			});
- 
+			
+
+			$(".refreshCollapsible" ).on("collapsibleexpand", function( event, ui ) {
+				console.log("event is " + JSON.stringify(event) + " and ui is " + JSON.stringify(ui))
+				var listSelector = $(this).find('ul').attr('id')	
+				var listFunction = $(this).find('ul').attr('data-customListFunction')
+				//alert(listSelector + " " + listFunction)
+				listConfigFiles(listSelector, listFunction)
+				
+			} );
+
 		}
 		
 		function inputFocus(i){
@@ -97,7 +107,8 @@
 		}
 
 
-	</script>
+</script>
+
 	<div data-role="page" id="pageHome" data-theme="b">
         <div data-role="header" data-add-back-btn="true">
 			<h1> Asell Teacher App </h1> 
@@ -163,11 +174,18 @@
 			<h1 class="logo" >SensorTag Investigation <img src="ui/images/GrayLogoColour2.jpg"></h1>
 			<h1 class=logo> Design</h1>
 			<h2 class="aselltext">
-				Design your own SensorTag configuration including all available configuration options:<br>
+				<strong>Design:</strong> Create a new SensorTag Investigation template including all available configuration options:<br>
 			</h2>
 			<a href="#pageExperiment" data-role="button"  data-theme="a">Design a SensorTag Investigation</a>
 			Note: The files you create can be shared and are also available on the local server (go to <a href="#pageShareFiles"> File Sharing </a>).<br>
 			
+			<br />
+			<h2 class="aselltext">
+				<strong>Edit:</strong> Select an existing SensorTag Investigation template to change:<br>
+			</h2>
+			<a href="#pageExperimentSelect" data-role="button"  data-theme="a">Edit a SensorTag Investigation</a>
+
+
 			<br />
 			<h2 class="aselltext">
 				You can also create a configuration file that allows you to name SensorTags for tracking and use in investigations.<br>
@@ -195,11 +213,11 @@
 					<fieldset class='ui-grid-b'>
 						<div class='ui-block-a'>
 							<label for="addDataStorage">Allow Data Storage</label>
-							<input  data-theme="a" type="checkbox" data-role="flipswitch" name="dataStorageAllowed" id="dataStorageAllowed" onchange="showHideLabel('dataStoragePrefixLabel')" >
+							<input data-theme="a" type="checkbox" data-role="flipswitch" name="dataStorageAllowed" id="dataStorageAllowed" onchange="showHideLabel('dataStoragePrefixLabel')" >
 						</div>
 						<div class='ui-block-b'>
 							<label for="add video">Allow Video:</label>
-							<input  data-theme="a" type="checkbox" data-role="flipswitch" name="videoAllowed" id="videoAllowed" onchange="showHideLabel('videoPrefixLabel')">
+							<input data-theme="a" type="checkbox" data-role="flipswitch" name="videoAllowed" id="videoAllowed" onchange="showHideLabel('videoPrefixLabel')">
 						</div>
 						<div class='ui-block-c'>
 							<label for="add video">Autostart Graphs:</label>
@@ -218,14 +236,14 @@
 					<input  data-theme="a"type="text" name="videoPrefix" value="" placeholder="sensorTagVideo"/>
 				</div>
 
-				<div data-role="collapsible" data-content-theme="a" name="sensorTags[0][connect]"  style="display:block;" class="asellList">
+				<div data-role="collapsible" data-content-theme="a" name="sensorTags0connect"  style="display:block;" class="asellList">
 					<h3>First SensorTag Configuration</h3> 
 					<div id="sensortag0List">
 					<script> buildSensortagConfigHTML(0) </script>
 					</div> 
 				</div>
 
-				<div data-role="collapsible" data-content-theme="a" name="sensorTags[1][connect]"  style="display:block;" class="asellList">
+				<div data-role="collapsible" data-content-theme="a" name="sensorTags1connect"  style="display:block;" class="asellList">
 					<h3>Second SensorTag Configuration</h3> 
 					<div id="sensortag1List">
 					<script> buildSensortagConfigHTML(1) </script>
@@ -240,6 +258,32 @@
 		
 		</div>
 	</div>
+
+	<div data-role="page" id="pageExperimentSelect" data-theme="b">
+        <div data-role="header" data-add-back-btn="true">
+			<a href="#pageShareFiles" data-icon="gear" class="ui-btn-right">File Sharing</a>
+			<h1> Asell Teacher App </h1>  
+		</div>        
+
+		<div data-role="main" class="ui-content">
+			<h1 class='logo'>
+				Edit an Investigation
+				<img src="ui/images/GrayLogoColour2.jpg">
+			</h1>
+
+
+			<div  data-role="collapsible" data-content-theme="b" class="asellList refreshCollapsible">
+			   <h3>Choose an investigation configuration file to edit</h3>
+				<ul id="editFileList" data-role="listview" data-inset="true" data-customListFunction="loadExperimentConfigFile">
+				</ul>
+				<a data-role="button" onclick="listConfigFiles('editFileList', 'loadExperimentConfigFile')">Refresh Investigation File List</a>
+			</div> 
+
+		</div> 
+	</div> 
+
+
+
 	
 	<div id="pageSensortagConfig" data-role="page"  data-theme="b">
 		<div data-role="header" data-add-back-btn="true">
@@ -258,11 +302,11 @@
 			<br />
 				You can inspect the current configuration file:
 			</h2>
-			<div  data-role="collapsible" data-content-theme="a" class="asellList">
+			<div  data-role="collapsible" data-content-theme="a" class="asellList" id="viewSensortagMappingCollapsible">
 			   <h3>View current SensorTag configuration file</h3>  
 				<p id='sensortagConfigFileData'>
 				</p>
-				<a onclick="viewSensorTagConfigFile()" data-theme="b" data-role="button" data-mini="true"> Load latest file </a>
+				<a onclick="viewSensorTagConfigFile()" data-theme="b" data-role="button" data-mini="true"> Refresh latest file </a>
 			</div> 
 
 			<h2 class="aselltext">
@@ -398,11 +442,11 @@
 			<div id='location'></div>
 			<br/>
 			 <h2 class="aselltext"><strong>Email files:</strong></h2>
-			<div  data-role="collapsible" data-content-theme="c" class="asellList">
+			<div  data-role="collapsible" data-content-theme="c" class="asellList refreshCollapsible">
 			   <h3>Choose a data file to share</h3>
-				<ul id="configFileList" data-role="listview" data-inset="true">
+				<ul id="configFileList" data-role="listview" data-inset="true" data-customListFunction="socialShareFile">
 				</ul>
-				<a data-role="button" onclick="listConfigFiles('configFileList')">Update Configuration File List</a>
+				<a data-role="button" onclick="listConfigFiles('configFileList', 'socialShareFile')">Refresh Configuration File List</a>
 			</div> 
 
  		</div>  

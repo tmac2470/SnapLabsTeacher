@@ -86,7 +86,7 @@ function createSensorFile(dirEntry, fileName, isAppend) {
 		//var stringConf = "{\"sensortagMapping\": {	\"institution\": \"Mt Sinai College\",  \"owner\": \"Tania Machet\",  \"sensortags\": { \"85a6bf0048b000\" : \"SensorTag Number 1\", 	\"36E83684-033A-50E7-668D-1DB03700181E\" : \"SensorTag 2\",	\"85a6bf0048b4b0\" : \"SensorTag 3\" 	}	} }  "
         //writeTextToFile(fileEntry, stringConf, isAppend);  
 		sensorFile = fileEntry;
-		viewSensorTagConfigFile();
+		//viewSensorTagConfigFile();
     }, errorHandler); 
 
 }	
@@ -121,6 +121,7 @@ function writeTextToFile(fileEntry, dataString, isAppend) {
 		var blob = new Blob([dataString], {type:'text/plain'});
         fileWriter.write(blob);
     });
+	
 }
 
 
@@ -164,7 +165,7 @@ function writeFileToFile(fileEntry, fileData) {
     fileEntry.createWriter(function (fileWriter) {
 
         fileWriter.onwriteend = function() {
-            console.log("Successful file write from file ...");
+            //console.log("Successful file write from file ...");
             readFile(fileEntry);
         };
 
@@ -221,15 +222,20 @@ function listResults(entries) {
   document.querySelector('#filelist').appendChild(fragment);
 }
 
-listConfigFiles = function(viewID)
+/*
+ * Functions to list files in a directory
+ * (Based on http://www.html5rocks.com/en/tutorials/file/filesystem/#toc-file)
+ */
+
+listConfigFiles = function(viewID, listFunction)
 {
 	console.log("DEBUG - View ID is " + viewID)
 	document.getElementById(viewID).innerHTML="";
-	getFileList(workingDir, viewID, listConfigFilesResults);
+	getFileList(workingDir, viewID, listConfigFilesResults, listFunction);
 }
 
 
-function getFileList(dir, viewID, callback) {
+function getFileList(dir, viewID, callback, listFunction) {
   var dirReader = dir.createReader();
   var entries = [];
   console.log("DEBUG - getting file list for: " + dir.fullPath + " to put in " + viewID)
@@ -238,7 +244,7 @@ function getFileList(dir, viewID, callback) {
   var readEntries = function() {
      dirReader.readEntries (function(results) {
       if (!results.length) {
-        callback(entries.sort(), viewID);
+        callback(entries.sort(), viewID, listFunction);
       } else {
         entries = entries.concat(toArray(results));
         readEntries();
@@ -249,7 +255,7 @@ function getFileList(dir, viewID, callback) {
   readEntries(); // Start reading dirs.
 }
 
-function listConfigFilesResults(entries, viewID) {
+function listConfigFilesResults(entries, viewID, listFunction) {
   // Document fragments can improve performance since they're only appended
   // to the DOM once. Only one browser reflow occurs.
   //var fragment = document.createDocumentFragment();
@@ -257,7 +263,7 @@ function listConfigFilesResults(entries, viewID) {
   entries.forEach(function(entry, i) {
     //var li = document.createElement('li');
     //li.innerHTML = ['<a class=" ui-icon-grid" onclick="loadExpConfig()">', entry.name, '</a>'].join('');
-	var li = "<li><a class='ui-btn ui-btn-icon-right ui-icon-carat-r' onclick='socialShareFile(\"" + entry.fullPath +"\")'> " + entry.name + "</a> </li>"
+	var li = "<li><a class='ui-btn ui-btn-icon-right ui-icon-carat-r' onclick='"+ listFunction + "(\"" + entry.fullPath +"\")'> " + entry.name + "</a> </li>"
     document.getElementById(viewID).innerHTML += li;
   }); 
 }
@@ -268,8 +274,8 @@ function listConfigFilesResults(entries, viewID) {
  */
  
 var onSuccess = function(result) {
-  console.log("Share completed? " + result.completed); // On Android apps mostly return false even while it's true
-  console.log("Shared to app: " + result.app); // On Android result.app is currently empty. On iOS it's empty when sharing is cancelled (result.completed=false)
+  console.log("DEBUG - Share completed? " + result.completed); // On Android apps mostly return false even while it's true
+  console.log("DEBUG - Shared to app: " + result.app); // On Android result.app is currently empty. On iOS it's empty when sharing is cancelled (result.completed=false)
 }
 
 var onError = function(msg) { 
@@ -740,6 +746,18 @@ buildSensortagConfigHTML = function(id)
 		// Changed to using a temporary string to make this more readable
 		var tempString = ""
 		tempString += "<hr><p><strong class='sensortitle'>" + sensors[i] + "</strong></p>"
+		
+		// Data sampling rate 
+		// TODO - Adda field for setting sampling rate
+		tempString += 	"<div class='ui-field-contain'>"
+		tempString +=  		"<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "][sampleinteval]'>Sampling rate:</label>"
+		tempString += 		"<select name='sensorTags[" + id + "][sensors][" + sensors[i] + "][sampleinteval]' id='select-native-1'>"
+        tempString += 			"<option value='1000'>1 sample per second</option>"
+        tempString += 			"<option value='500'>2 samples per second</option>"
+        tempString += 			"<option value='250'>4 samples per second</option>"
+        tempString += 			"<option value='100'>10 samples per second</option>"
+		tempString += 		"</select>"
+		tempString += 	"</div>"
 
 		// Additonal parameters depending on sensor
 		switch(sensors[i]){
@@ -748,12 +766,12 @@ buildSensortagConfigHTML = function(id)
 				tempString += "<fieldset class='ui-grid-a'>"
 				tempString += 	"<div class='ui-block-a'>"
 				// Flip switch for IR Temperature
-				tempString += 		"<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[parameters}[IR]'>Infrared or object temperature:</label>"
+				tempString += 		"<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "][parameters][IR]'>Infrared or object temperature:</label>"
 				tempString += 		"<input  class='sensortag"+id+"' type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors][" + sensors[i] + "][parameters][IR]' id='" + sensors[i] + id +"TempIRflip'>"
 				tempString += 	"</div>"
 				tempString += 	"<div class='ui-block-b'>"
 				// Flip switch for ambient Temperature diplay
-				tempString += 		"<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[parameters}[ambient]'>Ambient temperature:</label>"
+				tempString += 		"<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "][parameters][ambient]'>Ambient temperature:</label>"
 				tempString += 		"<input  class='sensortag"+id+"' type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors][" + sensors[i] + "][parameters][ambient]' id='" + sensors[i] + id +"TempAmbientflip'>"
 				tempString += 	"</div>"
 				tempString += "</fieldset>"
@@ -764,12 +782,12 @@ buildSensortagConfigHTML = function(id)
 				tempString += "<fieldset class='ui-grid-a'>"
 				tempString += 	"<div class='ui-block-a'>"
 				// Flip switch for IR Temperature
-				tempString += 		"<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[parameters}[xyz]'>x-y-z axis values:</label>"
+				tempString += 		"<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "][parameters][xyz]'>x-y-z axis values:</label>"
 				tempString += 		"<input  class='sensortag"+id+"' type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors][" + sensors[i] + "][parameters][xyz]' id='" + sensors[i] + id +"XYZflip'>"
 				tempString += 	"</div>"
 				tempString += 	"<div class='ui-block-b'>"
 				// Flip switch for ambient Temperature diplay
-				tempString += 		"<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[parameters}[ambient]'>Scalar:</label>"
+				tempString += 		"<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "][parameters][ambient]'>Scalar:</label>"
 				tempString += 		"<input  class='sensortag"+id+"' type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors][" + sensors[i] + "][parameters][scalar]' id='" + sensors[i] + id +"Scalarflip'>"
 				tempString += 	"</div>"
 				tempString += "</fieldset>"
@@ -781,22 +799,22 @@ buildSensortagConfigHTML = function(id)
 		tempString += "<fieldset class='ui-grid-c'>"
 			tempString += "<div class='ui-block-a'>"
 				// Flip switch for data display
-				tempString += "<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[data][display]'>Data:</label>"
+				tempString += "<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "][data][display]'>Data:</label>"
 				tempString += "<input  class='sensortag"+id+"' type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors][" + sensors[i] + "][data][display]' id='" + sensors[i] + id +"flip' onchange='showHideLabel(\"" + sensors[i] + id + "label\")'>"
 			tempString += "</div>"
 			tempString += "<div class='ui-block-b'>"
 				// Flip switch for graph diplay
-				tempString += "<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[graph]'>Graph:</label>"
+				tempString += "<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "][graph]'>Graph:</label>"
 				tempString += "<input  class='sensortag"+id+"' type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors][" + sensors[i] + "][graph][graphdisplay]' id='" + sensors[i] + id +"flipGraph' style='display:none' onchange='showHideLabel(\"" + sensors[i] + id + "labelGraph\")'> "
 			tempString += "</div>"
 			tempString += "<div class='ui-block-c'>" 
 				// Flip switch for grid diplay
-				tempString += "<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[grid][griddisplay]'> Grid:</label>"
+				tempString += "<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "][grid][griddisplay]'> Grid:</label>"
 				tempString += "<input  class='sensortag"+id+"' type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors][" + sensors[i] + "][grid][griddisplay]' id='" + sensors[i] + id +"flipGrid' style='display:none' onchange='showHideLabel(\"" + sensors[i] + id + "GridConfig\")'> "
 			tempString += "</div>"
 			tempString += "<div class='ui-block-d'>" 
 				// Flip switch for graph diplay
-				tempString += "<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[captureOnClick]'> Capture on Click:</label>"
+				tempString += "<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "][captureOnClick]'> Capture on Click:</label>"
 				tempString += "<input  class='sensortag"+id+"' type='checkbox' data-role='flipswitch' name='sensorTags[" +id + "][sensors][" + sensors[i] + "][captureOnClick]' id='" + sensors[i] + id +"flipCaptureOnClick' style='display:none'> "
 			tempString += "</div>"
 		tempString += "</fieldset>"
@@ -835,16 +853,16 @@ buildSensortagConfigHTML = function(id)
 		//Configuration for the grid
 		tempString += "<div id='"+ sensors[i] + id + "GridConfig' style='display:none' >" 
 		tempString += 	"<div class='ui-field-contain'>"
-		tempString += 		"<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[grid][columns]'>Columns:</label>"
-		tempString += 			"<select name='sensorTags[" + id + "][sensors][" + sensors[i] + "[grid][columns]'>"
+		tempString += 		"<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "][grid][columns]'>Columns:</label>"
+		tempString += 			"<select name='sensorTags[" + id + "][sensors][" + sensors[i] + "][grid][columns]'>"
 		for(var j=2 ;j<6;j++){ 
 			tempString +=		"<option value='" +j +"'>" +j +"</option>"
 		}
 		tempString += 		"</select>"
 		tempString += 	"</div>"
 		tempString += 	"<div class='ui-field-contain'>"
-		tempString += 		"<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "[grid][rows]'>Rows:</label>"
-		tempString += 			"<select name='sensorTags[" + id + "][sensors][" + sensors[i] + "[grid][rows]'>"
+		tempString += 		"<label for='sensorTags[" + id + "][sensors][" + sensors[i] + "][grid][rows]'>Rows:</label>"
+		tempString += 			"<select name='sensorTags[" + id + "][sensors][" + sensors[i] + "][grid][rows]'>"
 		for(var k=1 ;k<11;k++){ 
 			tempString +=		"<option value='" +k +"'>" +k +"</option>"
 		}
@@ -856,6 +874,115 @@ buildSensortagConfigHTML = function(id)
 	}
 }
 
+/*
+ * loadExperimentConfigFile 
+ * Loads up an experiment config file to edit
+ */
+
+loadExperimentConfigFile = function(fileName){
+	console.log("DEBUG - loading config for " + fileName)
+	$("body").pagecontainer("change", "#pageExperiment");
+	
+	workingDir.getFile(fileName, {create: false, exclusive: false}, function(fileEntry) {
+		fileEntry.file(function(file) {
+			var reader = new FileReader();
+
+			reader.onloadend = function(e) {
+				//console.log("DEBUG - Data read is: " + this.result);
+				var data = JSON.parse(this.result)
+				populate("#experimentForm", data.experimentConfig)
+				console.log("DEBUG - Data sent is: " + JSON.stringify(data.experimentConfig));
+			};
+			
+			reader.readAsText(file);
+		}, errorHandler);
+	}, errorHandler);
+
+}
+
+function populate(frm, data) {   
+	$.each(data, function(key, value){  
+		if(key == "sensorTags")
+		{
+			for( i=0; i <2; i++)
+			{
+				$.each(value[i], function(key_i, value_i){  
+					//console.log("DEBUG - Looking at element: "+ key_i + " with type " + $ctrl_i.attr("type") + " with value " + value_i)
+					if(key_i == "sensors")
+					{
+						$.each(value_i, function(key_j, value_j){  
+							if( typeof value_j === "object")
+							{
+								$.each(value_j, function(key_k, value_k){  
+									if( typeof value_k === "object")
+									{
+										$.each(value_k, function(key_l, value_l){  
+											var $ctrl_l = $('[name="sensorTags['+i+']['+key_i+']['+key_j+']['+key_k+']['+key_l+']"]', frm);   
+											//console.log("DEBUG - Looking at element: "+ key_l + " with type " + $ctrl_l.attr("type") + " with value " + value_l)
+											//console.log("DEBUG - element is: "+ $ctrl_l.selector)
+											popSwitch($ctrl_l, value_l)  
+										});
+									}
+									else
+									{
+											var $ctrl_k = $('[name="sensorTags['+i+']['+key_i+']['+key_j+']['+key_k+']"]', frm);   
+											//console.log("DEBUG - Looking at element: "+ key_k + " with type " + $ctrl_k.attr("type") + " with value " + value_k)
+											//console.log("DEBUG - element is: "+ $ctrl_k.selector)
+											popSwitch($ctrl_k, value_k)  
+									}
+								});
+							}
+							else
+							{
+								var $ctrl_j = $('[name="sensorTags['+i+']['+key_i+']['+key_j+']"]', frm);   
+								//console.log("DEBUG - Looking at element: "+ key_j + " with type " + $ctrl_j.attr("type") + " with value " + value_j)
+								//console.log("DEBUG - element is: "+ $ctrl_j.selector)
+								popSwitch($ctrl_j, value_j)  
+							}
+						});
+					}
+					else
+					{
+						var $ctrl_i = $('[name="sensorTags['+i+']['+key_i+']"]', frm);   
+						popSwitch($ctrl_i, value_i)  
+						//console.log("DEBUG - element is: "+ $ctrl_i.selector + " with type " +  $ctrl_i.attr("type") + ", name " + $ctrl_i.attr("name") + " and value " + $ctrl_i.val());
+					}
+				});
+			}
+		}
+		else
+		{
+			var $ctrl = $('[name='+key+']', frm);   
+			//console.log("DEBUG - Looking at element: "+ key + " with type " + $ctrl.attr("type") + " with value " + value)
+			popSwitch($ctrl, value)  
+		}
+	}); 
+ 
+}
+//Internal function for repeated switch statement
+function popSwitch($ctrl, value)
+{
+	switch($ctrl.attr("type"))  
+	{  
+		case "text" :   
+		case "hidden":  
+			$ctrl.val(value);   
+		break;   
+		case "radio" : 
+		case "checkbox": 
+			//console.log("DEBUG - Before. Value is: " + $ctrl.prop("checked") + " for " + $ctrl.attr("name"))
+			if(value == "on") {  
+				$ctrl.prop("checked", true ).flipswitch('refresh');
+			}
+			else {  
+				$ctrl.prop("checked", false ).flipswitch('refresh');
+			}				
+			//console.log("DEBUG - After. Value is: " + $ctrl.val() + " for " + $ctrl.attr("name"))
+		break;  
+		default:
+			$ctrl.val(value); 
+	}  	
+}
 /*
  * showHideSensortagConfig 
  * Display SensorTag Config informaion for each sensortag depending on user selection
@@ -1028,7 +1155,7 @@ function startServer( wwwroot ) {
 				*/
 				httpd.startServer({
 					'www_root' : wwwroot,
-					'port' : 3101,
+					'port' : 8080,
 					'localhost_only' : false
 				}, function( url ){
 				  // if server is up, it will return the url of http://<server ip>:port/

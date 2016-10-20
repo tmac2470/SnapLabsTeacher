@@ -903,7 +903,7 @@ var barometerDisplay = function(id,  values, pressure)
 		//'raw: <span style="font-family: monospace;">0x' +
 		//	bufferToHexStr(data, 0, 4) + '</span><br/>' +
 		//'Pressure: ' + 
-		pressure.toPrecision(6) + ' mbar<br/>'
+		pressure.toPrecision(6) + ' hPa<br/>'
 
 	/* 
 	 * Display values only by default 
@@ -966,7 +966,7 @@ var barometerDisplay = function(id,  values, pressure)
 			var yAxisTitle = expConfigData.sensorTags[id].sensors[sensorType].graphYAxis
 			// Set x-intercept to 700 for Barometer
 			datapoints["Barometer"].xmin = 700;
-			showGraphicData(sensorType+id+"GraphCanvas", graphType, graphTitle, xAxisTitle, yAxisTitle, datapoints[sensorType].xmin, datapoints[sensorType].ymin,  datapoints[sensorType].x[id], "Pressure (kPa)");
+			showGraphicData(sensorType+id+"GraphCanvas", graphType, graphTitle, xAxisTitle, yAxisTitle, datapoints[sensorType].xmin, datapoints[sensorType].ymin,  datapoints[sensorType].x[id], "Pressure (hPa)");
 		}
 	}
 }
